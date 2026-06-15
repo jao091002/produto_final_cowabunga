@@ -36,25 +36,6 @@ Observação: a aplicação serve as páginas em `Front/` diretamente na raiz do
 - **JSON Web Token (JWT)**: Implementado na arquitetura para autenticação segura baseada em tokens.
 - **Dotenv**: Gerenciamento de variáveis de ambiente.
 
----
-
-## Estrutura do Sistema
-
-A arquitetura do projeto está organizada de forma modular:
-
-```text
-├── index.html           # Landing page com efeitos 3D interativos e apresentação da equipe.
-├── login.html           # Portal de Autenticação (Login, Registro e Recuperação) altamente protegido.
-├── produto.html         # Loja Virtual/E-commerce com carrinho, checkout multi-step (Cartão, PIX, Boleto) e animação 3D da shuriken.
-├── dashboard.html       # Painel de controle completo (Dashboard Administrativo e Grid de Largada).
-├── app.js               # Lógica do Express, middlewares de segurança (Helmet/Rate-limit) e montagem das rotas.
-├── server.js            # Ponto de entrada do backend (Listener).
-├── db.js                # Conexão do pool MySQL (credentials via .env).
-└── routes/              # Módulos de rota da API REST (usuários, corredores, voltas).
-```
-
----
-
 ## Funcionalidades Implementadas
 
 O sistema integra as seguintes funcionalidades para entregar a experiência completa de uma equipe de corrida virtual:
@@ -84,14 +65,11 @@ O sistema integra as seguintes funcionalidades para entregar a experiência comp
 
 ## Participação de cada Integrante
 
-*Abaixo, registre o nome de cada membro e suas responsabilidades ou módulos desenvolvidos durante o projeto.*
 
-- **[Nome do Integrante 1]**: *[Ex: Desenvolveu o layout do Dashboard e o Grid de Largada]*
-- **[Nome do Integrante 2]**: *[Ex: Implementou a segurança do backend, a API REST e integração do BD]*
-- **[Nome do Integrante 3]**: *[Ex: Criação da UI/UX da landing page e integração do Three.js]*
-- **[Nome do Integrante 4]**: *[Ex: Configuração do E-commerce, carrinho de compras e checkout em JS]*
 
-*(Substitua os nomes e descrições conforme a realidade do seu time!)*
+-João Gustavo: Front-End
+- Miguel Garcia: API
+- Julia: Integração e ajustes de UI/UX
+- Kauanny:Modelagem e criação do banco de dados
 
----
-*Projeto desenvolvido para fins educacionais e portfólio. Cowabunga!*
+
