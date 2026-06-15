@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cowabunga — Coleção Ninja Oficial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="common.js"></script>
+
+    <style>
+        /* ═══ VARS ═══════════════════════════════ */
+        :root {
+            --gold:        #D4AF37;
+            --gold-light:  #F3E5AB;
+            --gold-mid:    #C9A227;
+            --gold-glow:   rgba(212,175,55,0.35);
+            --gold-dim:    rgba(212,175,55,0.10);
+            --green-deep:  #1A3320;
+            --green-light: #2A4B3C;
+            --black:       #050505;
+            --dark:        #0a0a0a;
+            --surface:     #0f0f0f;
+            --surface2:    #141414;
+            --border:      rgba(212,175,55,0.14);
+            --border-w:    rgba(255,255,255,0.06);
+            --text:        #f0f0f0;
+            --muted:       rgba(200,200,200,0.5);
+            --danger:      #e74c3c;
+            --ease:        cubic-bezier(0.25,0.8,0.25,1);
+            --ease-out:    cubic-bezier(0.22,1,0.36,1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--black);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Grain */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9998; opacity: 0.5;
+        }
+
+        h1,h2,h3,h4,h5 { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; outline: none; }
+        ul { list-style: none; }
+
+        /* ═══ CUSTOM CURSOR ═══════════════════════ */
+        #cowa-cursor {
+            position: fixed; top: 0; left: 0;
+            width: 28px; height: 28px;
+            background-image: url('/fotos/cursor_cowabunga-removebg-preview.png');
+            background-size: cover; background-position: center;
+            pointer-events: none; z-index: 999999;
+            transform: translate(-10%,-10%);
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+        }
+        #cowa-dot {
+            position: fixed; top: 0; left: 0;
+            width: 6px; height: 6px;
+            background: var(--gold); border-radius: 50%;
+            pointer-events: none; z-index: 999998;
+            transform: translate(-50%,-50%);
+            box-shadow: 0 0 8px var(--gold);
+            transition: transform 0.05s, opacity 0.2s;
+        }
+        body.clicking #cowa-cursor { transform: translate(-10%,-10%) scale(0.75); }
+        body.clicking #cowa-dot { transform: translate(-50%,-50%) scale(2.5); opacity: 0.5; }
+
+        /* ═══ PAGE LOADER ════════════════════════ */
+        #page-loader {
+            position: fixed; inset: 0;
+            background: var(--black);
+            z-index: 9999; display: flex;
+            align-items: center; justify-content: center;
+            flex-direction: column; gap: 1.2rem;
+            transition: opacity 0.6s 0.3s, visibility 0.6s 0.3s;
+        }
+        #page-loader.done { opacity: 0; visibility: hidden; }
+        .loader-text { font-family: 'Orbitron',sans-serif; font-size: 0.65rem; letter-spacing: 0.3em; color: var(--gold); }
+        .loader-bar { width: 160px; height: 1px; background: rgba(212,175,55,0.2); overflow: hidden; }
+        .loader-fill { height: 100%; background: var(--gold); width: 0; animation: fill 1.2s var(--ease-out) 0.2s forwards; }
+        @keyframes fill { to { width: 100%; } }
+
+        /* ═══ HEADER ══════════════════════════════ */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 500;
+            background: rgba(8,8,8,0.9); backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: box-shadow 0.3s;
+        }
+        header.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.6); }
+
+        .nav-container {
+            max-width: 1320px; margin: 0 auto;
+            padding: 0 32px; height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 38px; object-fit: contain; border-radius: 6px; }
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem; letter-spacing: 4px; font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+
+        .nav-link-back {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem; letter-spacing: 0.12em;
+            color: var(--muted);
+            border: 1px solid rgba(212,175,55,0.2);
+            padding: 7px 16px; border-radius: 6px;
+            transition: all 0.25s;
+            text-transform: uppercase;
+        }
+        .nav-link-back:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-dim); }
+
+        .cart-btn {
+            position: relative;
+            background: var(--gold); color: #000;
+            width: 44px; height: 44px;
+            border-radius: 10px; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s var(--ease);
+            box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+        }
+        .cart-btn:hover { transform: scale(1.08); box-shadow: 0 8px 30px var(--gold-glow); }
+
+        .cart-badge {
+            position: absolute; top: -6px; right: -6px;
+            background: var(--danger); color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem; font-weight: 700;
+            min-width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* ═══ HERO — 3D + SPOTLIGHT ═══════════════ */
+        .hero {
+            margin-top: 68px;
+            min-height: 80vh;
+            position: relative;
+            overflow: hidden;
+            display: flex; align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Grid BG */
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none; z-index: 0;
+        }
+
+        /* WebGL container */
+        #webgl-hero {
+            position: absolute; inset: 0;
+            z-index: 1; pointer-events: none;
+        }
+
+        /* SPOTLIGHT — inspired by TMNT Codepen */
+        .spotlight {
+            position: absolute; inset: 0; z-index: 2;
+            pointer-events: none;
+            background: radial-gradient(circle 320px at var(--mx,50%) var(--my,50%), rgba(212,175,55,0.09) 0%, transparent 70%);
+            transition: background 0.08s linear;
+        }
+
+        /* Water droplet effect layer */
+        #droplets-canvas {
+            position: absolute; inset: 0;
+            z-index: 3; pointer-events: none; opacity: 0.6;
+        }
+
+        /* Gradient overlays */
+        .hero-grad-l { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,5,5,0.75), transparent 60%); z-index: 4; pointer-events: none; }
+        .hero-grad-b { position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,5,5,1) 0%, transparent 40%); z-index: 4; pointer-events: none; }
+
+        .hero-inner {
+            position: relative; z-index: 5;
+            max-width: 1320px; margin: 0 auto;
+            padding: 100px 32px 80px;
+            width: 100%;
+        }
+
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem; letter-spacing: 0.2em;
+            color: var(--gold); border: 1px solid rgba(212,175,55,0.35);
+            padding: 6px 14px; border-radius: 4px;
+            margin-bottom: 24px;
+            background: rgba(212,175,55,0.06);
+            text-transform: uppercase;
+            animation: fadeUp 0.9s var(--ease-out) 0.5s both;
+        }
+
+        .hero-tag::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%; background: var(--gold);
+            box-shadow: 0 0 8px var(--gold);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7.5vw, 7.5rem);
+            line-height: 0.92; color: #fff;
+            margin-bottom: 24px;
+            animation: fadeUp 0.9s var(--ease-out) 0.65s both;
+            text-shadow: 0 20px 80px rgba(0,0,0,0.9);
+        }
+
+        .hero h1 .gold { color: var(--gold); }
+
+        .hero-desc {
+            color: var(--muted); font-size: 1rem; max-width: 480px;
+            line-height: 1.75; margin-bottom: 36px;
+            animation: fadeUp 0.9s var(--ease-out) 0.8s both;
+        }
+
+        .hero-cta {
+            display: flex; gap: 12px; flex-wrap: wrap;
+            animation: fadeUp 0.9s var(--ease-out) 0.95s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* LIQUID METAL BUTTON — inspired by CodePen */
+        .btn-liquid {
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem; font-weight: 800;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 1rem 2.4rem;
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            border-radius: 0;
+            overflow: hidden;
+            isolation: isolate;
+            transition: color 0.4s;
+        }
+
+        .btn-liquid::before {
+            content: '';
+            position: absolute; inset: -2px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold-mid), var(--gold));
+            background-size: 400% 400%;
+            z-index: -1;
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 0.5s var(--ease-out);
+            animation: liquidShift 4s ease infinite;
+        }
+
+        @keyframes liquidShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-liquid:hover::before { clip-path: inset(0 0% 0 0); }
+        .btn-liquid:hover { color: #0a0a0a; }
+
+        /* Liquid blob pseudo */
+        .btn-liquid::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,255,255,0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .btn-liquid:hover::after { opacity: 1; }
+
+        .btn-ghost {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid rgba(212,175,55,0.35);
+            color: rgba(212,175,55,0.8);
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s var(--ease-out);
+        }
+        .btn-ghost:hover {
+            background: rgba(212,175,55,0.1);
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* Hero stats */
+        .hero-stats {
+            display: flex; gap: 2.5rem; margin-top: 3rem;
+            animation: fadeUp 0.9s var(--ease-out) 1.1s both;
+        }
+
+        .hero-stat-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem; font-weight: 900;
+            color: var(--gold); line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: 0.65rem; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.12em;
+            margin-top: 0.25rem;
+        }
+
+        .hero-stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+        /* ═══ SCROLL TICKER ══════════════════════ */
+        .ticker-wrap {
+            overflow: hidden;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            padding: 12px 0;
+        }
+
+        .ticker-inner {
+            display: flex; gap: 4rem;
+            animation: ticker 20s linear infinite;
+            width: max-content;
+        }
+
+        @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        .ticker-item {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem; letter-spacing: 0.2em;
+            color: var(--muted); text-transform: uppercase;
+            white-space: nowrap; display: flex; align-items: center; gap: 1rem;
+        }
+
+        .ticker-item::before { content: '⚔'; color: var(--gold); }
+
+        /* ═══ PRODUCTS SECTION ═══════════════════ */
+        .section {
+            max-width: 1320px; margin: 0 auto;
+            padding: 80px 32px;
+        }
+
+        .section-head {
+            display: flex; align-items: flex-end;
+            justify-content: space-between; gap: 16px;
+            margin-bottom: 56px; flex-wrap: wrap;
+        }
+
+        .section-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem; letter-spacing: 0.2em;
+            color: var(--gold); text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .section-label::before {
+            content: ''; width: 24px; height: 1px; background: var(--gold);
+        }
+
+        .section-head h2 { font-size: clamp(2rem, 4vw, 3rem); color: #fff; line-height: 1; }
+        .section-head h2 span { color: var(--gold); }
+        .section-count { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+
+        /* Filter pills */
+        .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+
+        .filter-pill {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem; letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 7px 16px; border-radius: 100px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            transition: all 0.25s;
+        }
+        .filter-pill:hover, .filter-pill.active {
+            background: rgba(212,175,55,0.12);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+        }
+
+        /* PRODUCT CARD with 3D tilt */
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border-w);
+            border-radius: 16px; overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 1;
+            background: radial-gradient(circle 180px at var(--mx,50%) var(--my,50%), rgba(212,175,55,0.07), transparent);
+            opacity: 0; transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .product-card:hover { border-color: rgba(212,175,55,0.4); box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 50px rgba(212,175,55,0.15); }
+        .product-card:hover::before { opacity: 1; }
+
+        .product-img-wrap {
+            width: 100%; aspect-ratio: 4/3;
+            overflow: hidden; background: var(--surface2);
+            position: relative;
+        }
+
+        .product-img-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+            transition: transform 0.7s var(--ease-out);
+        }
+        .product-card:hover .product-img-wrap img { transform: scale(1.07); }
+
+        /* SHIMMER on hover */
+        .product-img-wrap::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%);
+            transform: translateX(-100%);
+            transition: transform 0s;
+        }
+        .product-card:hover .product-img-wrap::after {
+            transform: translateX(100%);
+            transition: transform 0.6s ease;
+        }
+
+        .product-badge {
+            position: absolute; top: 12px; left: 12px; z-index: 10;
+            background: var(--gold); color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem; font-weight: 900;
+            letter-spacing: 1px; padding: 4px 10px; border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(212,175,55,0.4);
+        }
+
+        .product-info { padding: 22px; position: relative; z-index: 2; }
+
+        .product-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem; letter-spacing: 0.5px;
+            margin-bottom: 8px; color: #fff;
+        }
+
+        .product-desc-short {
+            font-size: 0.8rem; color: var(--muted); line-height: 1.6;
+            margin-bottom: 18px;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .product-footer { display: flex; align-items: center; justify-content: space-between; }
+        .product-price { font-family: 'Space Mono', monospace; font-size: 1.05rem; color: var(--gold); font-weight: 700; }
+
+        /* LIQUID METAL card button */
+        .btn-card {
+            position: relative; overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 8px 16px; border-radius: 6px;
+            background: var(--surface2);
+            border: 1px solid rgba(212,175,55,0.25);
+            color: rgba(212,175,55,0.8);
+            transition: all 0.3s var(--ease-out);
+        }
+
+        .btn-card::before {
+            content: '';
+            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.12), transparent);
+            transition: left 0.5s;
+        }
+        .btn-card:hover { background: rgba(212,175,55,0.15); border-color: var(--gold); color: var(--gold); }
+        .btn-card:hover::before { left: 100%; }
+
+        /* ═══ MODAL PRODUTO ═══════════════════════ */
+        .overlay {
+            position: fixed; inset: 0; z-index: 700;
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.35s, visibility 0.35s;
+        }
+        .overlay.active { opacity: 1; visibility: visible; }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid rgba(212,175,55,0.25);
+            border-radius: 20px; width: 100%;
+            max-width: 900px; max-height: 90vh; overflow-y: auto;
+            position: relative;
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.4s var(--ease-out);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 60px rgba(212,175,55,0.08);
+        }
+        .overlay.active .modal { transform: scale(1) translateY(0); }
+
+        .modal::-webkit-scrollbar { width: 4px; }
+        .modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .close-btn {
+            position: absolute; top: 18px; right: 18px; z-index: 10;
+            background: var(--surface2); border: 1px solid var(--border-w);
+            color: var(--muted); width: 36px; height: 36px;
+            border-radius: 8px; font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .close-btn:hover { background: rgba(231,76,60,0.2); color: var(--danger); border-color: rgba(231,76,60,0.4); }
+
+        .modal-product-layout { display: grid; grid-template-columns: 1fr 1fr; }
+
+        /* 3D rotating product image in modal */
+        .modal-img-wrap {
+            aspect-ratio: 1; overflow: hidden;
+            border-radius: 20px 0 0 20px;
+            background: var(--surface2);
+            position: relative;
+        }
+
+        .modal-img-wrap::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, transparent 60%, rgba(212,175,55,0.08));
+            pointer-events: none;
+        }
+
+        .modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .modal-detail { padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; }
+
+        .modal-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem; color: var(--gold); letter-spacing: 0.2em;
+            text-transform: uppercase; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .modal-tag::before { content: ''; width: 20px; height: 1px; background: var(--gold); }
+
+        .modal-title { font-size: 2rem; line-height: 1; margin-bottom: 8px; color: #fff; }
+        .modal-price { font-family: 'Space Mono', monospace; font-size: 1.6rem; color: var(--gold); margin-bottom: 16px; font-weight: 700; }
+        .modal-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.75; margin-bottom: 28px; }
+
+        .size-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: block; font-family: 'Orbitron', sans-serif; }
+
+        .sizes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+
+        .size-btn {
+            font-family: 'Space Mono', monospace; font-size: 0.75rem;
+            background: var(--surface2); color: var(--text);
+            border: 1px solid var(--border-w);
+            padding: 8px 16px; border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .size-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .size-btn.active { background: var(--gold); color: #000; border-color: var(--gold); box-shadow: 0 4px 16px rgba(212,175,55,0.3); }
+
+        .btn-primary {
+            background: var(--gold); color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem; font-weight: 900; letter-spacing: 0.1em;
+            padding: 15px 24px; border-radius: 10px; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.3s var(--ease-out);
+            box-shadow: 0 6px 24px rgba(212,175,55,0.3);
+            position: relative; overflow: hidden;
+        }
+
+        /* Liquid effect on primary button */
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            width: 60px; height: 60px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            transition: transform 0.5s;
+        }
+
+        .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(212,175,55,0.55); }
+        .btn-primary:hover::before { transform: translate(-50%,-50%) scale(4); opacity: 0; transition: transform 0.6s, opacity 0.6s; }
+        .btn-primary:active { transform: translateY(-1px); }
+
+        .btn-modal-sec {
+            background: transparent; color: var(--muted);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem; font-weight: 600;
+            padding: 12px 24px; border-radius: 10px; width: 100%;
+            border: 1px solid var(--border-w); margin-top: 10px;
+            transition: all 0.25s;
+        }
+        .btn-modal-sec:hover { background: rgba(212,175,55,0.08); border-color: var(--border); color: var(--gold); }
+
+        /* ═══ CART SIDEBAR ════════════════════════ */
+        .cart-sidebar {
+            position: fixed; top: 0; right: -460px; width: 440px; height: 100vh;
+            background: var(--surface);
+            border-left: 1px solid rgba(212,175,55,0.2);
+            z-index: 800; display: flex; flex-direction: column;
+            transition: right 0.4s var(--ease-out);
+            box-shadow: -24px 0 80px rgba(0,0,0,0.6);
+        }
+        .cart-sidebar.active { right: 0; }
+
+        .cart-header {
+            padding: 24px; border-bottom: 1px solid var(--border-w);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .cart-header h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; letter-spacing: 1px; color: var(--gold); }
+
+        .cart-close {
+            background: var(--surface2); border: 1px solid var(--border-w);
+            color: var(--muted); width: 34px; height: 34px;
+            border-radius: 6px; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .cart-close:hover { background: rgba(231,76,60,0.15); color: var(--danger); }
+
+        .cart-items { flex: 1; overflow-y: auto; padding: 20px 24px; }
+        .cart-items::-webkit-scrollbar { width: 3px; }
+        .cart-items::-webkit-scrollbar-thumb { background: var(--border); }
+
+        .cart-empty { text-align: center; color: var(--muted); font-family: 'Orbitron', sans-serif; font-size: 0.7rem; margin-top: 60px; letter-spacing: 0.1em; }
+        .cart-empty i { font-size: 2.5rem; display: block; margin-bottom: 16px; opacity: 0.3; }
+
+        .cart-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border-w); }
+        .cart-item-img { width: 64px; height: 64px; border-radius: 10px; overflow: hidden; background: var(--surface2); flex-shrink: 0; border: 1px solid var(--border-w); }
+        .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-item-body { flex: 1; min-width: 0; }
+        .cart-item-name { font-weight: 600; font-size: 0.85rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cart-item-meta { font-size: 0.7rem; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 8px; }
+
+        .cart-item-actions { display: flex; align-items: center; gap: 8px; }
+        .qty-ctrl { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border-w); border-radius: 6px; overflow: hidden; }
+        .qty-ctrl button { background: none; color: var(--text); border: none; width: 28px; height: 28px; font-size: 0.75rem; transition: all 0.2s; }
+        .qty-ctrl button:hover { background: rgba(212,175,55,0.15); color: var(--gold); }
+        .qty-ctrl span { font-family: 'Space Mono', monospace; font-size: 0.8rem; min-width: 28px; text-align: center; }
+
+        .remove-item { background: none; color: var(--muted); font-size: 0.75rem; padding: 0 6px; transition: color 0.2s; border: none; }
+        .remove-item:hover { color: var(--danger); }
+
+        .cart-price { font-family: 'Space Mono', monospace; font-size: 0.82rem; color: var(--gold); white-space: nowrap; align-self: center; }
+
+        .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border-w); }
+
+        .cart-summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .cart-summary-label { font-size: 0.78rem; color: var(--muted); }
+        .cart-summary-val { font-family: 'Space Mono', monospace; font-size: 0.82rem; }
+        .cart-total { font-size: 1rem; color: var(--gold); font-family: 'Orbitron', sans-serif; font-weight: 900; }
+
+        .btn-checkout {
+            background: var(--gold); color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem; font-weight: 900; letter-spacing: 0.1em;
+            padding: 14px; border-radius: 10px; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.3s var(--ease-out); margin-top: 16px;
+            box-shadow: 0 6px 20px rgba(212,175,55,0.3);
+        }
+        .btn-checkout:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(212,175,55,0.5); }
+
+        /* ═══ CHECKOUT OVERLAY ═══════════════════ */
+        .checkout-modal {
+            background: var(--surface);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 20px; width: 100%;
+            max-width: 760px; max-height: 92vh; overflow-y: auto;
+            position: relative;
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.4s var(--ease-out);
+        }
+        .overlay.active .checkout-modal { transform: scale(1) translateY(0); }
+        .checkout-modal::-webkit-scrollbar { width: 4px; }
+        .checkout-modal::-webkit-scrollbar-thumb { background: var(--border); }
+
+        .checkout-header {
+            padding: 28px 32px 20px;
+            border-bottom: 1px solid var(--border-w);
+        }
+
+        .checkout-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--gold); letter-spacing: 0.1em; }
+
+        .checkout-tabs {
+            display: flex; gap: 0; margin-top: 20px;
+            border-bottom: 1px solid var(--border-w);
+        }
+
+        .tab-step {
+            flex: 1; padding: 10px 8px; text-align: center;
+            font-family: 'Orbitron', sans-serif; font-size: 0.58rem; letter-spacing: 0.1em;
+            color: var(--muted); border-bottom: 2px solid transparent;
+            transition: all 0.3s; text-transform: uppercase;
+        }
+        .tab-step.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .tab-step.done { color: rgba(39,174,96,0.8); border-bottom-color: rgba(39,174,96,0.5); }
+
+        .checkout-body { padding: 28px 32px; }
+
+        .checkout-step { display: none; animation: fadeSlide 0.4s var(--ease-out); }
+        .checkout-step.active { display: block; }
+
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .checkout-section-title {
+            font-family: 'Orbitron', sans-serif; font-size: 0.75rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 18px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .checkout-section-title::before { content: ''; width: 3px; height: 14px; background: var(--gold); border-radius: 2px; }
+
+        .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+        .field-group.single { grid-template-columns: 1fr; }
+        .field-group.triple { grid-template-columns: 2fr 1fr 1fr; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-family: 'Orbitron', sans-serif; }
+        .field input, .field select {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,55,0.18);
+            color: #00000000; padding: 10px 14px; border-radius: 8px;
+            font-family: 'Inter', sans-serif; font-size: 0.9rem;
+            transition: all 0.25s; -webkit-appearance: none;
+        }
+        .field input:focus, .field select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,0.1); background: rgba(212,175,55,0.05); }
+        .field input::placeholder { color: var(--muted); }
+        .field select option { background: var(--surface2); }
+
+        /* Card visual */
+        .card-visual {
+            background: linear-gradient(135deg, #1a2510, #0d1a0a);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 16px; padding: 24px;
+            margin-bottom: 20px; position: relative; overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .card-visual::before {
+            content: '';
+            position: absolute; top: -30px; right: -30px;
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%);
+        }
+
+        .cv-chip {
+            width: 42px; height: 32px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-mid));
+            border-radius: 5px; margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(212,175,55,0.3);
+        }
+
+        .cv-number { font-family: 'Space Mono', monospace; font-size: 1rem; letter-spacing: 3px; margin-bottom: 16px; color: rgba(255,255,255,0.9); }
+        .cv-row { display: flex; justify-content: space-between; }
+        .cv-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .cv-val { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
+        .cv-brand { position: absolute; bottom: 20px; right: 24px; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: var(--gold); opacity: 0.6; }
+
+        /* Pay methods */
+        .pay-methods { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+        .pay-method {
+            flex: 1; min-width: 100px; padding: 14px;
+            border-radius: 10px; text-align: center;
+            border: 1px solid var(--border-w); background: var(--surface2);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--muted); transition: all 0.25s; display: flex;
+            flex-direction: column; align-items: center; gap: 6px;
+        }
+        .pay-method i { font-size: 1.2rem; }
+        .pay-method:hover { border-color: rgba(212,175,55,0.3); color: var(--text); }
+        .pay-method.active { border-color: var(--gold); background: rgba(212,175,55,0.1); color: var(--gold); }
+
+        .pay-section { display: none; }
+        .pay-section.active { display: block; animation: fadeSlide 0.3s var(--ease-out); }
+
+        /* PIX section */
+        .pix-container { text-align: center; padding: 20px 0; }
+        .pix-qr {
+            width: 160px; height: 160px; margin: 16px auto;
+            background: repeating-linear-gradient(45deg, #1a2510 0px, #1a2510 4px, rgba(212,175,55,0.15) 4px, rgba(212,175,55,0.15) 8px);
+            border: 2px solid var(--gold); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .pix-key { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); word-break: break-all; margin: 12px 0; padding: 10px; background: var(--surface2); border-radius: 8px; }
+        .btn-copy { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; padding: 8px 20px; background: rgba(212,175,55,0.1); border: 1px solid var(--border); color: var(--gold); border-radius: 6px; transition: all 0.2s; }
+        .btn-copy:hover { background: rgba(212,175,55,0.2); }
+
+        /* Boleto */
+        .boleto-container { padding: 16px 0; }
+        .boleto-line { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); text-align: center; margin: 12px 0; padding: 10px; background: var(--surface2); border-radius: 8px; letter-spacing: 1px; }
+
+        /* Order summary */
+        .order-summary { border: 1px solid var(--border-w); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
+        .order-summary-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border-w); }
+        .order-summary-row:last-child { border-bottom: none; }
+        .order-thumb { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: var(--surface2); flex-shrink: 0; }
+        .order-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .order-item-name { font-size: 0.82rem; font-weight: 600; }
+        .order-item-meta { font-size: 0.7rem; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 2px; }
+        .order-item-price { font-family: 'Space Mono', monospace; font-size: 0.82rem; color: var(--gold); margin-left: auto; white-space: nowrap; }
+
+        .checkout-totals { padding: 16px 18px; background: rgba(212,175,55,0.04); border-radius: 10px; margin-bottom: 20px; }
+        .checkout-total-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 6px; color: var(--muted); }
+        .checkout-total-row.grand { color: var(--gold); font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 900; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-w); }
+
+        .btn-pay {
+            background: var(--gold); color: #000;
+            font-family: 'Orbitron', sans-serif; font-size: 0.82rem; font-weight: 900;
+            padding: 16px; border-radius: 10px; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.3s var(--ease-out);
+            box-shadow: 0 6px 24px rgba(212,175,55,0.3);
+        }
+        .btn-pay:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(212,175,55,0.5); }
+
+        .btn-pay-back {
+            background: transparent; color: var(--muted);
+            font-family: 'Orbitron', sans-serif; font-size: 0.68rem; font-weight: 600;
+            padding: 12px; border-radius: 10px; width: 100%;
+            border: 1px solid var(--border-w); margin-top: 10px; transition: all 0.2s;
+        }
+        .btn-pay-back:hover { background: rgba(212,175,55,0.06); border-color: var(--border); color: var(--gold); }
+
+        .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Success */
+        .success-step { text-align: center; padding: 40px 20px; }
+        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, rgba(39,174,96,0.2), rgba(39,174,96,0.05)); border: 2px solid rgba(39,174,96,0.4); margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #27ae60; }
+        .success-title { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 12px; }
+        .success-sub { color: var(--muted); font-size: 0.9rem; max-width: 380px; margin: 0 auto 28px; line-height: 1.6; }
+
+        /* ═══ TOAST ══════════════════════════════ */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 12px; padding: 14px 20px;
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.875rem; max-width: 340px;
+            transform: translateY(120%); opacity: 0;
+            transition: transform 0.4s var(--ease-out), opacity 0.4s;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { color: var(--gold); font-size: 1rem; }
+
+        /* ═══ AMBIENT 3D RING ═════════════════════ */
+        #webgl-ambient {
+            position: fixed; bottom: -100px; right: -100px;
+            width: 400px; height: 400px;
+            pointer-events: none; z-index: 0; opacity: 0.4;
+        }
+
+        /* ═══ SECTION DIVIDER ════════════════════ */
+        .divider-gold { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.3; margin: 0; }
+
+        /* ═══ FOOTER ══════════════════════════════ */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 32px;
+            text-align: center;
+        }
+
+        .footer-brand { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 12px; }
+        .footer-copy { font-size: 0.75rem; color: var(--muted); }
+
+        /* ═══ RESPONSIVE ══════════════════════════ */
+        @media (max-width: 768px) {
+            .modal-product-layout { grid-template-columns: 1fr; }
+            .modal-img-wrap { border-radius: 20px 20px 0 0; }
+            .modal-detail { padding: 28px 24px; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+            .field-group { grid-template-columns: 1fr; }
+            .field-group.triple { grid-template-columns: 1fr 1fr; }
+            .cart-sidebar { width: 100%; right: -100%; }
+            .checkout-body { padding: 20px; }
+            .checkout-header { padding: 20px; }
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 2px; }
+
+        /* ═══ REVEAL ANIMATIONS ═══════════════════ */
+        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-32px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+    </style>
+</head>
+<body>
+    <!-- CURSOR -->
+    <div id="cowa-cursor"></div>
+    <div id="cowa-dot"></div>
+
+    <!-- PAGE LOADER -->
+    <div id="page-loader">
+        <div class="loader-text">COWABUNGA — COLEÇÃO NINJA</div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:0.5rem;letter-spacing:0.3em;color:rgba(255,255,255,0.15);margin-top:4px;">INICIANDO SISTEMAS</div>
+    </div>
+
+    <div id="auth-modal" class="login-gate-overlay hidden" role="alertdialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <div class="login-gate-card auth-card">
+            <div class="auth-header-bar">
+                <div>
+                    <div class="auth-title" id="auth-modal-title">Acesso restrito</div>
+                    <div class="auth-subtitle">Faça login ou cadastre-se para entrar na loja.</div>
+                </div>
+                <button class="btn-secondary" onclick="window.location.href='../index.html'">Voltar</button>
+            </div>
+            <div class="auth-tabs">
+                <button id="tab-login" class="auth-tab active" type="button" onclick="switchView('view-login')">Login</button>
+                <button id="tab-register" class="auth-tab" type="button" onclick="switchView('view-register')">Cadastro</button>
+            </div>
+            <div id="view-login" class="auth-view">
+                <form id="form-login" novalidate autocomplete="off" onsubmit="processAuth(event,'login')">
+                    <div class="field-group">
+                        <label for="login-email">E-mail</label>
+                        <input id="login-email" type="email" placeholder="seu@email.com" required>
+                        <div class="field-error" id="login-email-err"></div>
+                    </div>
+                    <div class="field-group">
+                        <label for="login-pass">Senha</label>
+                        <input id="login-pass" type="password" placeholder="Senha" required>
+                        <div class="field-error" id="login-pass-err"></div>
+                    </div>
+                    <button id="btn-login" class="btn-primary" type="submit"><i class="fas fa-door-open"></i> Entrar</button>
+                </form>
+            </div>
+            <div id="view-register" class="auth-view hidden">
+                <form id="form-register" novalidate autocomplete="off" onsubmit="processAuth(event,'register')">
+                    <div class="field-group">
+                        <label for="reg-name">Nome completo</label>
+                        <input id="reg-name" type="text" placeholder="Seu nome" required>
+                        <div class="field-error" id="reg-name-err"></div>
+                    </div>
+                    <div class="field-group">
+                        <label for="reg-email">E-mail</label>
+                        <input id="reg-email" type="email" placeholder="seu@email.com" required>
+                        <div class="field-error" id="reg-email-err"></div>
+                    </div>
+                    <div class="field-group">
+                        <label for="reg-pass">Senha</label>
+                        <input id="reg-pass" type="password" placeholder="Mínimo 8 caracteres" required>
+                        <div class="field-error" id="reg-pass-err"></div>
+                    </div>
+                    <div class="field-group">
+                        <label for="reg-pass2">Confirmar senha</label>
+                        <input id="reg-pass2" type="password" placeholder="Repita a senha" required>
+                        <div class="field-error" id="reg-pass2-err"></div>
+                    </div>
+                    <button id="btn-register" class="btn-primary" type="submit"><i class="fas fa-user-plus"></i> Criar conta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- AMBIENT 3D -->
+    <canvas id="webgl-ambient"></canvas>
+
+    <!-- HEADER -->
+    <header id="site-header">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/fotos/logo-1.jpg" alt="Cowabunga F1" onerror="this.style.display='none'">
+                <div class="logo-text">COWABUNGA</div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-link-back" type="button" onclick="window.location.href='../index.html'">Voltar</button>
+            </div>
+        </div>
+    </header>
+
+    <style>
+        .login-gate-overlay {
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(5,5,5,0.96); display: flex;
+            align-items: center; justify-content: center;
+            padding: 24px; text-align: left;
+        }
+        .login-gate-card {
+            max-width: 520px; width: 100%; padding: 30px;
+            background: rgba(16,16,16,0.98); border: 1px solid rgba(212,175,55,0.25);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.65);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .auth-header-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 20px; margin-bottom: 28px;
+        }
+        .auth-title {
+            font-family: 'Orbitron', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem);
+            color: var(--gold); margin-bottom: 6px;
+        }
+        .auth-subtitle {
+            color: var(--muted); font-size: 0.95rem; line-height: 1.7;
+        }
+        .auth-tabs {
+            display: flex; gap: 12px; margin-bottom: 24px; justify-content: center;
+        }
+        .auth-tab {
+            flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.15);
+            color: var(--muted); padding: 14px 0; border-radius: 999px;
+            font-family: 'Orbitron', sans-serif; font-size: 0.75rem; letter-spacing: 0.12em;
+            text-transform: uppercase; cursor: pointer; transition: all 0.25s ease;
+        }
+        .auth-tab.active {
+            background: var(--gold); color: #050505; border-color: var(--gold);
+            box-shadow: 0 14px 30px rgba(212,175,55,0.15);
+        }
+        .auth-view { display: block; }
+        .field-group {
+            display: grid; gap: 8px; margin-bottom: 18px;
+        }
+        .field-group label {
+            font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .field-group input {
+            width: 100%; padding: 14px 16px; border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04);
+            color: #fff; font-size: 0.95rem;
+        }
+        .field-group input:focus {
+            border-color: rgba(212,175,55,0.4); outline: none;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.08);
+        }
+        .field-error {
+            min-height: 18px; color: #f06565; font-size: 0.78rem; line-height: 1.2;
+        }
+        .auth-view.hidden { display: none; }
+        .btn-primary {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 10px; padding: 14px 28px; background: var(--gold);
+            color: #000; border-radius: 999px; font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem; font-weight: 900; text-transform: uppercase;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            border: none; cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 35px rgba(212,175,55,0.32);
+        }
+        .btn-secondary {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 14px 24px; border-radius: 999px; border: 1px solid rgba(212,175,55,0.2);
+            color: var(--muted); background: rgba(255,255,255,0.04); font-family: 'Orbitron',sans-serif;
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
+        }
+        .btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+        .hidden { display: none !important; }
+        @media(max-width: 640px) {
+            .auth-header-bar { flex-direction: column; align-items: stretch; }
+            .auth-tabs { flex-direction: column; }
+        }
+    </style>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero" id="hero">
+        <div class="hero-grid"></div>
+        <canvas id="webgl-hero"></canvas>
+        <div class="spotlight" id="spotlight"></div>
+        <canvas id="droplets-canvas"></canvas>
+        <div class="hero-grad-l"></div>
+        <div class="hero-grad-b"></div>
+
+        <div class="hero-inner">
+            <div class="hero-tag">✦ COLEÇÃO 2026 · EDIÇÃO LIMITADA</div>
+            <h1>
+                VESTI O<br>
+                <span class="gold">CASCO</span><br>
+                MUTANTE
+            </h1>
+            <p class="hero-desc">
+                Uniformes táticos, acessórios de elite e itens colecionáveis. Cada peça carrega o espírito inquebrável das tartarugas — feita para quem não para na curva.
+            </p>
+            <div class="hero-cta">
+                <button class="btn-liquid" onclick="document.getElementById('produtos-section').scrollIntoView({behavior:'smooth'})">
+                    VER COLEÇÃO
+                </button>
+                <button class="btn-ghost" onclick="toggleCart()">
+                    <i class="fas fa-bag-shopping"></i> MEU CARRINHO
+                </button>
+            </div>
+
+            <div class="hero-stats">
+                <div>
+                    <div class="hero-stat-val">5+</div>
+                    <div class="hero-stat-label">Produtos Exclusivos</div>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div>
+                    <div class="hero-stat-val">100%</div>
+                    <div class="hero-stat-label">Material Premium</div>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div>
+                    <div class="hero-stat-val">2026</div>
+                    <div class="hero-stat-label">Ed. Temporada</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker-wrap">
+        <div class="ticker-inner" id="ticker">
+            <div class="ticker-item">UNIFORME OFICIAL</div>
+            <div class="ticker-item">CAMISA TORCEDOR</div>
+            <div class="ticker-item">BONÉ CASCO</div>
+            <div class="ticker-item">MOCHILA MUTANTE</div>
+            <div class="ticker-item">ACTION FIGURES</div>
+            <div class="ticker-item">COLEÇÃO 2026</div>
+            <div class="ticker-item">RACE WITH THE SHIELD</div>
+            <div class="ticker-item">COWABUNGA F1</div>
+            <!-- Duplicate for seamless loop -->
+            <div class="ticker-item">UNIFORME OFICIAL</div>
+            <div class="ticker-item">CAMISA TORCEDOR</div>
+            <div class="ticker-item">BONÉ CASCO</div>
+            <div class="ticker-item">MOCHILA MUTANTE</div>
+            <div class="ticker-item">ACTION FIGURES</div>
+            <div class="ticker-item">COLEÇÃO 2026</div>
+            <div class="ticker-item">RACE WITH THE SHIELD</div>
+            <div class="ticker-item">COWABUNGA F1</div>
+        </div>
+    </div>
+
+    <!-- PRODUTOS -->
+    <section id="produtos-section">
+        <div class="section">
+            <div class="section-head reveal">
+                <div>
+                    <div class="section-label">Coleção Oficial</div>
+                    <h2>PRODUTOS <span>NINJA</span></h2>
+                </div>
+                <span class="section-count" id="products-count">5 itens</span>
+            </div>
+
+            <div class="filter-row reveal">
+                <button class="filter-pill active" data-filter="all">Todos</button>
+                <button class="filter-pill" data-filter="vestuario">Vestuário</button>
+                <button class="filter-pill" data-filter="acessorio">Acessórios</button>
+                <button class="filter-pill" data-filter="colecao">Colecionáveis</button>
+            </div>
+
+            <div class="products-grid" id="products-grid"></div>
+        </div>
+    </section>
+
+    <!-- PRODUCT MODAL -->
+    <div class="overlay" id="overlay-product">
+        <div class="modal">
+            <button class="close-btn" onclick="closeOverlay('overlay-product')" aria-label="Fechar">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-product-layout" id="product-detail-container"></div>
+        </div>
+    </div>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-bag-shopping" style="margin-right:8px;"></i> Carrinho</h3>
+            <button class="cart-close" onclick="toggleCart()" aria-label="Fechar carrinho">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cart-items-container"></div>
+        <div class="cart-footer">
+            <div class="cart-summary-row">
+                <span class="cart-summary-label">Subtotal</span>
+                <span class="cart-summary-val" id="cart-subtotal">R$ 0,00</span>
+            </div>
+            <div class="cart-summary-row">
+                <span class="cart-summary-label">Frete</span>
+                <span class="cart-summary-val" style="color:#27ae60;">GRÁTIS</span>
+            </div>
+            <div class="cart-summary-row" style="margin-top:8px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">
+                <span class="cart-total">TOTAL</span>
+                <span class="cart-total" id="cart-total-price">R$ 0,00</span>
+            </div>
+            <button class="btn-checkout" onclick="openCheckout()">
+                <i class="fas fa-lock"></i> FINALIZAR COMPRA
+            </button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT OVERLAY -->
+    <div class="overlay" id="overlay-checkout">
+        <div class="checkout-modal">
+            <button class="close-btn" onclick="closeOverlay('overlay-checkout')" aria-label="Fechar">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="checkout-header">
+                <div class="checkout-title"><i class="fas fa-shield-halved" style="margin-right:8px;"></i> Checkout Seguro</div>
+                <div class="checkout-tabs">
+                    <div class="tab-step active" id="tab-1">01 · Dados</div>
+                    <div class="tab-step" id="tab-2">02 · Pagamento</div>
+                    <div class="tab-step" id="tab-3">03 · Revisão</div>
+                </div>
+            </div>
+            <div class="checkout-body">
+
+                <!-- STEP 1: DATA -->
+                <div class="checkout-step active" id="step-1">
+                    <div class="checkout-section-title">Informações Pessoais</div>
+                    <div class="field-group">
+                        <div class="field"><label>Nome Completo</label><input type="text" id="field-nome" placeholder="Leonardo Splinter"></div>
+                        <div class="field"><label>CPF</label><input type="text" id="field-cpf" placeholder="000.000.000-00" maxlength="14"></div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field"><label>E-mail</label><input type="email" id="field-email" placeholder="ninja@cowabunga.com"></div>
+                        <div class="field"><label>Telefone</label><input type="tel" id="field-tel" placeholder="(11) 99999-9999" maxlength="15"></div>
+                    </div>
+
+                    <div class="checkout-section-title" style="margin-top:24px;">Endereço de Entrega</div>
+                    <div class="field-group">
+                        <div class="field"><label>CEP</label><input type="text" id="field-cep" placeholder="00000-000" maxlength="9"></div>
+                        <div class="field"><label>Estado</label><select id="field-estado"><option>SP</option><option>RJ</option><option>MG</option><option>Outro</option></select></div>
+                    </div>
+                    <div class="field-group single">
+                        <div class="field"><label>Endereço</label><input type="text" id="field-rua" placeholder="Rua das Tartarugas, 4"></div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field"><label>Número</label><input type="text" id="field-num" placeholder="42"></div>
+                        <div class="field"><label>Cidade</label><input type="text" id="field-cidade" placeholder="Nova York"></div>
+                    </div>
+
+                    <button class="btn-pay" style="margin-top:12px;" onclick="goToStep('payment')">
+                        Continuar para Pagamento <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- STEP 2: PAYMENT -->
+                <div class="checkout-step" id="step-payment">
+                    <div class="checkout-section-title">Forma de Pagamento</div>
+                    <div class="pay-methods">
+                        <button class="pay-method active" id="pm-credito" onclick="selectPayMethod('credito')">
+                            <i class="fas fa-credit-card"></i> Crédito
+                        </button>
+                        <button class="pay-method" id="pm-pix" onclick="selectPayMethod('pix')">
+                            <i class="fas fa-qrcode"></i> PIX
+                        </button>
+                        <button class="pay-method" id="pm-boleto" onclick="selectPayMethod('boleto')">
+                            <i class="fas fa-barcode"></i> Boleto
+                        </button>
+                    </div>
+
+                    <!-- CREDIT CARD -->
+                    <div class="pay-section active" id="sec-credito">
+                        <div class="card-visual">
+                            <div class="cv-chip"></div>
+                            <div class="cv-number" id="cv-number">•••• •••• •••• ••••</div>
+                            <div class="cv-row">
+                                <div><div class="cv-label">Titular</div><div class="cv-val" id="cv-name">SEU NOME</div></div>
+                                <div><div class="cv-label">Validade</div><div class="cv-val" id="cv-exp">MM/AA</div></div>
+                            </div>
+                            <div class="cv-brand">COWABUNGA</div>
+                        </div>
+                        <div class="field-group single">
+                            <div class="field"><label>Número do Cartão</label><input type="text" id="field-card" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCardNum(this)"></div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field"><label>Titular</label><input type="text" id="field-cardname" placeholder="LEONARDO SPLINTER" oninput="document.getElementById('cv-name').textContent=(this.value.toUpperCase()||'SEU NOME')"></div>
+                            <div class="field"><label>Validade</label><input type="text" id="field-exp" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)"></div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field"><label>CVV</label><input type="text" id="field-cvv" placeholder="•••" maxlength="4"></div>
+                            <div class="field"><label>Parcelas</label><select id="field-parcelas"><option>1× sem juros</option><option>2× sem juros</option><option>3× sem juros</option><option>6× com juros</option><option>12× com juros</option></select></div>
+                        </div>
+                    </div>
+
+                    <!-- PIX -->
+                    <div class="pay-section" id="sec-pix">
+                        <div class="pix-container">
+                            <i class="fas fa-qrcode" style="font-size:3rem;color:var(--gold);opacity:0.6;"></i>
+                            <div class="pix-qr"><i class="fas fa-qrcode" style="font-size:4rem;color:var(--gold);opacity:0.4;"></i></div>
+                            <div class="pix-key">pix@cowabungaf1.com.br</div>
+                            <button class="btn-copy" onclick="copyPix()"><i class="fas fa-copy" style="margin-right:6px;"></i> Copiar Chave PIX</button>
+                        </div>
+                    </div>
+
+                    <!-- BOLETO -->
+                    <div class="pay-section" id="sec-boleto">
+                        <div class="boleto-container">
+                            <i class="fas fa-barcode" style="font-size:3rem;color:var(--gold);opacity:0.6;margin-bottom:12px;display:block;text-align:center;"></i>
+                            <p style="color:var(--muted);font-size:0.82rem;text-align:center;margin-bottom:16px;">O boleto tem vencimento em 3 dias úteis.</p>
+                            <div class="boleto-line">34191.09008 61207.727285 71140.960004 4 10670000025990</div>
+                            <div style="text-align:center;"><button class="btn-copy" onclick="copyBoleto()"><i class="fas fa-copy" style="margin-right:6px;"></i> Copiar Linha Digitável</button></div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:10px;margin-top:16px;">
+                        <button class="btn-pay-back" onclick="goToStep('1')"><i class="fas fa-arrow-left" style="margin-right:6px;"></i> Voltar</button>
+                        <button class="btn-pay" onclick="goToStep('review')">
+                            Revisar Pedido <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: REVIEW -->
+                <div class="checkout-step" id="step-review">
+                    <div class="checkout-section-title">Resumo do Pedido</div>
+                    <div class="order-summary" id="order-summary-items"></div>
+                    <div class="checkout-totals">
+                        <div class="checkout-total-row"><span>Subtotal</span><span id="checkout-sub">R$ 0,00</span></div>
+                        <div class="checkout-total-row"><span>Frete</span><span style="color:#27ae60;">Grátis</span></div>
+                        <div class="checkout-total-row grand"><span>TOTAL</span><span id="checkout-total">R$ 0,00</span></div>
+                    </div>
+                    <button class="btn-pay" id="btn-pay" onclick="processPayment()">
+                        <i class="fas fa-lock"></i> Confirmar Pagamento
+                    </button>
+                    <button class="btn-pay-back" onclick="goToStep('payment')"><i class="fas fa-arrow-left" style="margin-right:6px;"></i> Voltar</button>
+                </div>
+
+                <!-- SUCCESS -->
+                <div class="checkout-step" id="step-success">
+                    <div class="success-step">
+                        <div class="success-icon"><i class="fas fa-check"></i></div>
+                        <div class="success-title">COWABUNGA!</div>
+                        <p class="success-sub">Pedido confirmado! Você receberá as informações de rastreio em seu e-mail em breve. Obrigado por fazer parte da equipe!</p>
+                        <button class="btn-liquid" style="margin:0 auto;display:block;" onclick="finalizePurchase()">
+                            VOLTAR À LOJA
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-circle-check"></i>
+        <span id="toast-text">—</span>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="divider-gold"></div>
+    <footer>
+        <div class="footer-brand">COWABUNGA F1 · COLEÇÃO OFICIAL 2026</div>
+        <div class="footer-copy">© 2026 Cowabunga F1 Team. Todos os direitos reservados. Race With The Shield.</div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+    /* ════════════════════════════════════════════
+       CURSOR
+    ════════════════════════════════════════════ */
+    (function() {
+        const cur = document.getElementById('cowa-cursor');
+        const dot = document.getElementById('cowa-dot');
+        let mx = 0, my = 0, dx = 0, dy = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+        (function loop() { dx += (mx-dx)*0.14; dy += (my-dy)*0.14; dot.style.left = dx+'px'; dot.style.top = dy+'px'; requestAnimationFrame(loop); })();
+        document.addEventListener('mousedown', () => document.body.classList.add('clicking'));
+        document.addEventListener('mouseup',   () => document.body.classList.remove('clicking'));
+    })();
+
+    /* ════════════════════════════════════════════
+       PAGE LOADER
+    ════════════════════════════════════════════ */
+    window.addEventListener('load', () => setTimeout(() => document.getElementById('page-loader').classList.add('done'), 1200));
+
+    /* ════════════════════════════════════════════
+       HEADER SCROLL
+    ════════════════════════════════════════════ */
+    window.addEventListener('scroll', () => {
+        document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ════════════════════════════════════════════
+       SPOTLIGHT (TMNT inspired)
+    ════════════════════════════════════════════ */
+    const spotlight = document.getElementById('spotlight');
+    const hero = document.querySelector('.hero');
+    hero.addEventListener('mousemove', e => {
+        const r = hero.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+        const y = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+        spotlight.style.setProperty('--mx', x + '%');
+        spotlight.style.setProperty('--my', y + '%');
+        spotlight.style.background = `radial-gradient(circle 360px at ${x}% ${y}%, rgba(212,175,55,0.11) 0%, rgba(26,51,32,0.05) 45%, transparent 70%)`;
+    });
+
+    /* ════════════════════════════════════════════
+       WATER DROPLETS CANVAS (inspired by CodePen)
+    ════════════════════════════════════════════ */
+    (function() {
+        const canvas = document.getElementById('droplets-canvas');
+        const ctx = canvas.getContext('2d');
+        let drops = [];
+
+        function resize() {
+            canvas.width  = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        function spawnDrop() {
+            drops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height * 0.5,
+                r: Math.random() * 2.5 + 0.8,
+                vy: Math.random() * 0.3 + 0.08,
+                alpha: Math.random() * 0.5 + 0.2,
+                trail: [],
+            });
+        }
+
+        for (let i = 0; i < 40; i++) spawnDrop();
+
+        function drawDrop(d) {
+            // Trail
+            ctx.save();
+            ctx.strokeStyle = `rgba(212,175,55,${d.alpha * 0.25})`;
+            ctx.lineWidth = d.r * 0.5;
+            ctx.beginPath();
+            d.trail.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+            ctx.stroke();
+
+            // Drop circle
+            const g = ctx.createRadialGradient(d.x, d.y - d.r * 0.3, 0, d.x, d.y, d.r * 1.4);
+            g.addColorStop(0,   `rgba(255,255,255,${d.alpha * 0.8})`);
+            g.addColorStop(0.4, `rgba(212,175,55,${d.alpha * 0.5})`);
+            g.addColorStop(1,   `rgba(212,175,55,0)`);
+
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.ellipse(d.x, d.y, d.r * 0.6, d.r, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Highlight
+            ctx.fillStyle = `rgba(255,255,255,${d.alpha * 0.6})`;
+            ctx.beginPath();
+            ctx.arc(d.x - d.r * 0.25, d.y - d.r * 0.4, d.r * 0.22, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drops.forEach(d => {
+                d.trail.push({ x: d.x, y: d.y });
+                if (d.trail.length > 8) d.trail.shift();
+
+                d.y += d.vy + (d.r * 0.12);
+                drawDrop(d);
+
+                if (d.y > canvas.height + 20) {
+                    d.y = -10; d.x = Math.random() * canvas.width;
+                    d.trail = [];
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Occasional new drops
+        setInterval(() => { if (drops.length < 60) spawnDrop(); }, 300);
+    })();
+
+    /* ════════════════════════════════════════════
+       THREE.JS HERO — ADVANCED 3D SHURIKEN SCENE
+    ════════════════════════════════════════════ */
+    (function() {
+        const canvas = document.getElementById('webgl-hero');
+        const scene  = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.04);
+
+        const w = window.innerWidth, h = window.innerHeight;
+        const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 200);
+        camera.position.set(0, 0, 14);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        renderer.toneMapping        = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.4;
+
+        /* Lights */
+        scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+
+        const goldPt = new THREE.PointLight(0xD4AF37, 4, 30);
+        goldPt.position.set(6, 4, 5);
+        scene.add(goldPt);
+
+        const greenPt = new THREE.PointLight(0x00ff44, 2.5, 20);
+        greenPt.position.set(-5, -4, 3);
+        scene.add(greenPt);
+
+        const rimPt = new THREE.PointLight(0xFFFFFF, 1, 15);
+        rimPt.position.set(0, 8, -2);
+        scene.add(rimPt);
+
+        /* ── MAIN SHURIKEN ── */
+        const mkShuriken = (radius, blades) => {
+            const group = new THREE.Group();
+            const centerMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.95, roughness: 0.05, envMapIntensity: 2 });
+            const bladeMat  = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 1, roughness: 0.1, emissive: 0x221800, envMapIntensity: 3 });
+
+            const hub = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.22, radius * 0.22, radius * 0.1, 32), centerMat);
+            group.add(hub);
+
+            for (let i = 0; i < blades; i++) {
+                const g = new THREE.ConeGeometry(radius * 0.25, radius * 1.1, 4);
+                g.scale(1, 1, 0.12);
+                const pivot = new THREE.Group();
+                pivot.rotation.z = (Math.PI * 2 / blades) * i + Math.PI / blades;
+                const blade = new THREE.Mesh(g, bladeMat);
+                blade.position.y = radius * 0.65;
+                pivot.add(blade);
+                group.add(pivot);
+            }
+
+            // Wire ring
+            const ringGeo = new THREE.TorusGeometry(radius * 1.1, 0.015, 8, 80);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xD4AF37, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+            group.add(new THREE.Mesh(ringGeo, ringMat));
+
+            return group;
+        };
+
+        const shurikenA = mkShuriken(2.8, 4);
+        shurikenA.position.set(3.5, 0.8, -1);
+        scene.add(shurikenA);
+
+        const shurikenB = mkShuriken(1.4, 4);
+        shurikenB.position.set(-4.5, -1.5, -3);
+        shurikenB.rotation.z = Math.PI / 8;
+        scene.add(shurikenB);
+
+        const shurikenC = mkShuriken(0.9, 4);
+        shurikenC.position.set(5.5, -2.5, 1);
+        scene.add(shurikenC);
+
+        /* ── KATANA BLADES ── */
+        const mkKatana = (len) => {
+            const g = new THREE.Group();
+            const bladeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 1, roughness: 0.06, envMapIntensity: 3 });
+            const blade = new THREE.Mesh(new THREE.BoxGeometry(0.05, len, 0.015), bladeMat);
+            blade.position.y = len / 2;
+            g.add(blade);
+            const glow = new THREE.Mesh(
+                new THREE.BoxGeometry(0.08, len, 0.008),
+                new THREE.MeshBasicMaterial({ color: 0xD4AF37, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending })
+            );
+            glow.position.y = len / 2;
+            g.add(glow);
+            return g;
+        };
+
+        const kat1 = mkKatana(5);
+        kat1.position.set(-2, -1, 2);
+        kat1.rotation.z = 0.3;
+        scene.add(kat1);
+
+        const kat2 = mkKatana(4.5);
+        kat2.position.set(-2.5, -1, 1.8);
+        kat2.rotation.z = -0.2;
+        scene.add(kat2);
+
+        /* ── PARTICLE FIELD ── */
+        const pGeo = new THREE.BufferGeometry();
+        const pCount = 500;
+        const pPos = new Float32Array(pCount * 3);
+        const pSpeeds = new Float32Array(pCount);
+        for (let i = 0; i < pCount; i++) {
+            const r = 5 + Math.random() * 10;
+            const t = Math.random() * Math.PI * 2;
+            pPos[i*3]   = Math.cos(t) * r;
+            pPos[i*3+1] = (Math.random()-0.5) * 20;
+            pPos[i*3+2] = Math.sin(t) * r - 5;
+            pSpeeds[i]  = 0.012 + Math.random() * 0.025;
+        }
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+
+        const pCanvas = document.createElement('canvas');
+        pCanvas.width = pCanvas.height = 16;
+        const pCtx = pCanvas.getContext('2d');
+        const pg = pCtx.createRadialGradient(8,8,0,8,8,8);
+        pg.addColorStop(0, 'rgba(255,255,255,1)');
+        pg.addColorStop(0.3, 'rgba(212,175,55,0.9)');
+        pg.addColorStop(1, 'rgba(0,0,0,0)');
+        pCtx.fillStyle = pg;
+        pCtx.fillRect(0,0,16,16);
+
+        const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+            size: 0.22, map: new THREE.CanvasTexture(pCanvas),
+            transparent: true, opacity: 0.6,
+            blending: THREE.AdditiveBlending, depthWrite: false
+        }));
+        scene.add(particles);
+
+        /* ── LIQUID METAL SPHERE ── */
+        const liquidGeo = new THREE.SphereGeometry(1.2, 64, 64);
+        const liquidMat = new THREE.MeshStandardMaterial({
+            color: 0xD4AF37, metalness: 1, roughness: 0.02,
+            envMapIntensity: 5
+        });
+        const liquid = new THREE.Mesh(liquidGeo, liquidMat);
+        liquid.position.set(-3, 2, -4);
+        scene.add(liquid);
+
+        /* Mouse parallax */
+        let targetRY = 0, targetRX = 0;
+        document.addEventListener('mousemove', e => {
+            targetRY = (e.clientX / window.innerWidth - 0.5) * 1.2;
+            targetRX = (e.clientY / window.innerHeight - 0.5) * 0.8;
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const t = clock.getElapsedTime();
+
+            shurikenA.rotation.z -= 0.018;
+            shurikenA.rotation.x += (targetRX - shurikenA.rotation.x) * 0.04;
+            shurikenA.rotation.y += (targetRY - shurikenA.rotation.y) * 0.04;
+            shurikenA.position.y = 0.8 + Math.sin(t * 1.6) * 0.2;
+
+            shurikenB.rotation.z += 0.022;
+            shurikenB.position.y = -1.5 + Math.sin(t * 2.1 + 1) * 0.15;
+
+            shurikenC.rotation.z -= 0.035;
+            shurikenC.position.y = -2.5 + Math.cos(t * 2.4) * 0.1;
+
+            kat1.rotation.z = 0.3 + Math.sin(t * 0.9) * 0.08;
+            kat2.rotation.z = -0.2 + Math.sin(t * 1.1 + 0.5) * 0.06;
+
+            // Liquid sphere morph (displacement simulation)
+            liquid.rotation.y = t * 0.4;
+            liquid.rotation.x = Math.sin(t * 0.3) * 0.3;
+            liquid.position.y = 2 + Math.sin(t * 0.7) * 0.3;
+            liquidMat.roughness = 0.02 + Math.abs(Math.sin(t * 0.8)) * 0.04;
+
+            // Particles rise
+            const pos = pGeo.attributes.position.array;
+            for (let i = 0; i < pCount; i++) {
+                pos[i*3+1] += pSpeeds[i];
+                if (pos[i*3+1] > 10) pos[i*3+1] = -10;
+            }
+            pGeo.attributes.position.needsUpdate = true;
+            particles.rotation.y = t * 0.06;
+
+            goldPt.intensity = 4 + Math.sin(t * 1.2) * 0.8;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            const w = window.innerWidth, h = window.innerHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+    })();
+
+    /* ════════════════════════════════════════════
+       THREE.JS AMBIENT CORNER TORUS
+    ════════════════════════════════════════════ */
+    (function() {
+        const canvas = document.getElementById('webgl-ambient');
+        const w = 400, h = 400;
+        canvas.width = w; canvas.height = h;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
+        camera.position.set(0, 0, 7);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+        const pt = new THREE.PointLight(0xD4AF37, 3, 20);
+        pt.position.set(3, 3, 3);
+        scene.add(pt);
+
+        const torus = new THREE.Mesh(
+            new THREE.TorusKnotGeometry(1.8, 0.45, 200, 20),
+            new THREE.MeshStandardMaterial({ color: 0x1A3320, metalness: 0.85, roughness: 0.1, wireframe: false })
+        );
+        scene.add(torus);
+
+        const wire = new THREE.Mesh(
+            new THREE.TorusKnotGeometry(1.82, 0.46, 200, 20),
+            new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending })
+        );
+        scene.add(wire);
+
+        const clock = new THREE.Clock();
+        (function loop() {
+            requestAnimationFrame(loop);
+            const t = clock.getElapsedTime();
+            torus.rotation.x = t * 0.25;
+            torus.rotation.y = t * 0.35;
+            wire.rotation.x = t * 0.25;
+            wire.rotation.y = t * 0.35;
+            renderer.render(scene, camera);
+        })();
+    })();
+
+    /* ════════════════════════════════════════════
+       PRODUCTS DATA
+    ════════════════════════════════════════════ */
+    const products = [
+        {
+            id: 1, category: 'vestuario',
+            name: 'Uniforme Oficial COWABUNGA',
+            price: 299.90,
+            desc: 'O uniforme tático completo para o combate urbano. Material tecnológico de alta absorção, costuras reforçadas e estampa emborrachada do casco nas costas.',
+            sizes: ['P','M','G','GG'],
+            img: '/fotos/Uoficial.png',
+            badge: 'MAIS VENDIDO'
+        },
+        {
+            id: 2, category: 'vestuario',
+            name: 'Camisa de Torcedor',
+            price: 149.90,
+            desc: 'Vista as cores da sua tartaruga favorita! Tecido dry-fit respirável, ideal para o dia a dia. Escudo bordado no peito.',
+            sizes: ['P','M','G','GG','XG'],
+            img: '/fotos/torcedor.jpg',
+            badge: null
+        },
+        {
+            id: 3, category: 'acessorio',
+            name: 'Boné Snapback Casco',
+            price: 79.90,
+            desc: 'Aba reta estilo urbano com o clássico casco texturizado na parte frontal. Fechamento ajustável.',
+            sizes: ['Único'],
+            img: '/fotos/logo-2.png',
+            badge: null
+        },
+        {
+            id: 4, category: 'acessorio',
+            name: 'Mochila Casco de Tartaruga',
+            price: 199.90,
+            desc: 'Mochila ergonômica em formato 3D de casco. Compartimento para notebook, bolsos secretos e material impermeável ultra resistente.',
+            sizes: ['Único'],
+            img: '/fotos/mochila.jpg',
+            badge: 'EXCLUSIVO'
+        },
+        {
+            id: 5, category: 'colecao',
+            name: 'Action Figures 4-Pack',
+            price: 349.90,
+            desc: 'Edição de colecionador. Inclui Leo, Donnie, Raph e Mikey. Figuras de 15cm altamente articuladas, pintura premium com todas as armas clássicas.',
+            sizes: ['Único'],
+            img: '/fotos/figures.jpg',
+            badge: 'COLECIONÁVEL'
+        }
+    ];
+
+    let cart = [];
+    let currentSelectedSize = null;
+    let currentPayMethod = 'credito';
+
+    const fmt = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    function openAuthModal() {
+        const modal = document.getElementById('auth-modal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuthModal() {
+        const modal = document.getElementById('auth-modal');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function switchView(view) {
+        document.getElementById('view-login').classList.toggle('hidden', view !== 'view-login');
+        document.getElementById('view-register').classList.toggle('hidden', view !== 'view-register');
+        document.getElementById('tab-login').classList.toggle('active', view === 'view-login');
+        document.getElementById('tab-register').classList.toggle('active', view === 'view-register');
+    }
+
+    function setErr(inputId, errId, message) {
+        const input = document.getElementById(inputId);
+        const err = document.getElementById(errId);
+        if (input) input.classList.add('input-error');
+        if (err) err.textContent = message;
+    }
+
+    function clearErr(inputId, errId) {
+        const input = document.getElementById(inputId);
+        const err = document.getElementById(errId);
+        if (input) input.classList.remove('input-error');
+        if (err) err.textContent = '';
+    }
+
+    function validateEmail(value, inputId, errId) {
+        const email = value.trim();
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regex.test(email)) {
+            setErr(inputId, errId, 'E-mail inválido.');
+            return false;
+        }
+        clearErr(inputId, errId);
+        return true;
+    }
+
+    function validateMin(value, min, inputId, errId, message) {
+        if (!value || value.length < min) {
+            setErr(inputId, errId, message);
+            return false;
+        }
+        clearErr(inputId, errId);
+        return true;
+    }
+
+    function btnLoading(buttonId, isLoading) {
+        const btn = document.getElementById(buttonId);
+        if (!btn) return;
+        if (isLoading) {
+            btn.dataset.original = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Carregando...';
+            btn.disabled = true;
+            btn.style.opacity = '0.8';
+        } else {
+            btn.innerHTML = btn.dataset.original || btn.innerHTML;
+            btn.disabled = false;
+            btn.style.opacity = '';
+        }
+    }
+
+    function btnDone(buttonId, text) {
+        const btn = document.getElementById(buttonId);
+        if (!btn) return;
+        btn.innerHTML = text;
+        btn.disabled = true;
+    }
+
+    function btnReset(buttonId, text) {
+        const btn = document.getElementById(buttonId);
+        if (!btn) return;
+        btn.innerHTML = text;
+        btn.disabled = false;
+    }
+
+    async function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function processAuth(e, action) {
+        e.preventDefault();
+
+        if (action === 'login') {
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-pass').value;
+
+            let valid = true;
+            valid = validateEmail(email, 'login-email', 'login-email-err') && valid;
+            valid = validateMin(pass, 1, 'login-pass', 'login-pass-err', 'Senha obrigatória.') && valid;
+            if (!valid) return;
+
+            btnLoading('btn-login', true);
+            await delay(800);
+            try {
+                const response = await apiFetch('/users/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, senha: pass })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    btnLoading('btn-login', false);
+                    setErr('login-pass', 'login-pass-err', data.erro || 'E-mail ou senha incorretos.');
+                    showToast(data.erro || 'Credenciais inválidas.', 'fa-triangle-exclamation');
+                    return;
+                }
+                setAuthSession(data.token, data.user);
+                btnDone('btn-login', 'ACESSO LIBERADO');
+                showToast('Bem-vindo, ' + data.user.nome.split(' ')[0] + '!', 'fa-circle-check');
+                await delay(1200);
+                closeAuthModal();
+                renderProducts();
+                updateCartUI();
+            } catch (error) {
+                btnLoading('btn-login', false);
+                showToast('Erro de conexão. Tente novamente.', 'fa-triangle-exclamation');
+                console.error(error);
+            }
+        } else if (action === 'register') {
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const pass = document.getElementById('reg-pass').value;
+            const pass2 = document.getElementById('reg-pass2').value;
+
+            let valid = true;
+            valid = validateMin(name, 3, 'reg-name', 'reg-name-err', 'Nome deve ter ao menos 3 caracteres.') && valid;
+            valid = validateEmail(email, 'reg-email', 'reg-email-err') && valid;
+            valid = validateMin(pass, 8, 'reg-pass', 'reg-pass-err', 'Mínimo 8 caracteres.') && valid;
+            if (pass !== pass2) {
+                setErr('reg-pass2', 'reg-pass2-err', 'As senhas não coincidem.');
+                valid = false;
+            } else if (pass.length >= 8) {
+                clearErr('reg-pass2', 'reg-pass2-err');
+            }
+            if (!valid) return;
+
+            btnLoading('btn-register', true);
+            try {
+                const response = await apiFetch('/users', {
+                    method: 'POST',
+                    body: JSON.stringify({ nome: name, email, senha: pass })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    btnLoading('btn-register', false);
+                    setErr('reg-email', 'reg-email-err', data.erro || 'Erro no cadastro.');
+                    showToast(data.erro || 'Erro no cadastro. Tente novamente.', 'fa-triangle-exclamation');
+                    return;
+                }
+                btnDone('btn-register', 'CADASTRO CONCLUÍDO');
+                showToast('Conta criada! Faça login agora.', 'fa-circle-check');
+                await delay(1200);
+                btnReset('btn-register', '<i class="fas fa-user-plus"></i> Criar conta');
+                switchView('view-login');
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-pass').focus();
+            } catch (error) {
+                btnLoading('btn-register', false);
+                showToast('Erro de conexão. Tente novamente.', 'fa-triangle-exclamation');
+                console.error(error);
+            }
+        }
+    }
+
+    function requireLogin() {
+        const user = sessionStorage.getItem('cowa_user');
+        if (user) return true;
+        openAuthModal();
+        return false;
+    }
+
+    /* ════════════════════════════════════════════
+       RENDER PRODUCTS
+    ════════════════════════════════════════════ */
+    function renderProducts(filter = 'all') {
+        const grid = document.getElementById('products-grid');
+        grid.innerHTML = '';
+
+        const visible = filter === 'all' ? products : products.filter(p => p.category === filter);
+        document.getElementById('products-count').textContent = `${visible.length} ${visible.length === 1 ? 'item' : 'itens'}`;
+
+        visible.forEach((p, idx) => {
+            const card = document.createElement('div');
+            card.className = 'product-card reveal';
+            card.style.transitionDelay = (idx * 0.08) + 's';
+
+            card.innerHTML = `
+                <div class="product-img-wrap">
+                    <img src="${p.img}" alt="${p.name}" loading="lazy"
+                         onerror="this.src='https://placehold.co/400x300/0f0f0f/D4AF37?text=${encodeURIComponent(p.name)}'">
+                    ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+                </div>
+                <div class="product-info">
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-desc-short">${p.desc}</div>
+                    <div class="product-footer">
+                        <div class="product-price">${fmt(p.price)}</div>
+                        <button class="btn-card" onclick="openProductModal(${p.id})">Ver Detalhes</button>
+                    </div>
+                </div>
+            `;
+
+            // 3D tilt
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                const x = e.clientX - r.left, y = e.clientY - r.top;
+                const rX = ((y / r.height) - 0.5) * -12;
+                const rY = ((x / r.width)  - 0.5) *  12;
+                card.style.transition = 'border-color 0.3s, box-shadow 0.3s';
+                card.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg) scale3d(1.02,1.02,1.02)`;
+                card.style.setProperty('--mx', ((x / r.width)  * 100) + '%');
+                card.style.setProperty('--my', ((y / r.height) * 100) + '%');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transition = 'transform 0.5s var(--ease-out), border-color 0.3s, box-shadow 0.3s';
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+            });
+
+            grid.appendChild(card);
+
+            // Trigger reveal
+            requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('active')));
+        });
+    }
+
+    /* ════════════════════════════════════════════
+       FILTERS
+    ════════════════════════════════════════════ */
+    document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProducts(btn.dataset.filter);
+        });
+    });
+
+    /* ════════════════════════════════════════════
+       PRODUCT MODAL
+    ════════════════════════════════════════════ */
+    function openProductModal(id) {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        currentSelectedSize = p.sizes.length === 1 ? p.sizes[0] : null;
+
+        document.getElementById('product-detail-container').innerHTML = `
+            <div class="modal-img-wrap">
+                <img src="${p.img}" alt="${p.name}"
+                     onerror="this.src='https://placehold.co/600x600/141414/D4AF37?text=${encodeURIComponent(p.name)}'">
+            </div>
+            <div class="modal-detail">
+                <div class="modal-tag">COWABUNGA · Coleção 2026</div>
+                <h2 class="modal-title">${p.name}</h2>
+                <div class="modal-price">${fmt(p.price)}</div>
+                <p class="modal-desc">${p.desc}</p>
+                <span class="size-label">Tamanho</span>
+                <div class="sizes">
+                    ${p.sizes.map(s => `<button class="size-btn ${(p.sizes.length===1||s===currentSelectedSize)?'active':''}" onclick="selectSize(this,'${s}')">${s}</button>`).join('')}
+                </div>
+                <button class="btn-primary" onclick="addToCart(${p.id})">
+                    <i class="fas fa-bag-shopping"></i> Adicionar ao Carrinho
+                </button>
+                <button class="btn-modal-sec" onclick="closeOverlay('overlay-product')">Continuar Comprando</button>
+            </div>
+        `;
+
+        openOverlay('overlay-product');
+    }
+
+    function selectSize(btn, size) {
+        btn.closest('.sizes').querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSelectedSize = size;
+    }
+
+    /* ════════════════════════════════════════════
+       CART
+    ════════════════════════════════════════════ */
+    function addToCart(id) {
+        if (!currentSelectedSize) { showToast('Selecione um tamanho!', 'fa-triangle-exclamation'); return; }
+        const p = products.find(x => x.id === id);
+        const ex = cart.find(i => i.id === id && i.size === currentSelectedSize);
+        if (ex) ex.qty++;
+        else cart.push({ id: p.id, name: p.name, price: p.price, img: p.img, size: currentSelectedSize, qty: 1 });
+        closeOverlay('overlay-product');
+        updateCartUI();
+        showToast(`${p.name} adicionado ao carrinho!`);
+    }
+
+    function toggleCart() {
+        document.getElementById('cart-sidebar').classList.toggle('active');
+    }
+
+    function updateCartQty(i, delta) {
+        cart[i].qty += delta;
+        if (cart[i].qty <= 0) cart.splice(i, 1);
+        updateCartUI();
+    }
+
+    function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+
+    function updateCartUI() {
+        const cont = document.getElementById('cart-items-container');
+        const badge = document.getElementById('cart-count');
+
+        let total = 0, qty = 0;
+        cont.innerHTML = '';
+
+        if (!cart.length) {
+            cont.innerHTML = `<div class="cart-empty"><i class="fas fa-bag-shopping"></i>Seu carrinho está vazio</div>`;
+        } else {
+            cart.forEach((item, i) => {
+                total += item.price * item.qty;
+                qty   += item.qty;
+                cont.innerHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-img">
+                            <img src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/64x64/141414/D4AF37?text=TMNT'">
+                        </div>
+                        <div class="cart-item-body">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-meta">TAM: ${item.size} · ${fmt(item.price)}</div>
+                            <div class="cart-item-actions">
+                                <div class="qty-ctrl">
+                                    <button onclick="updateCartQty(${i},-1)"><i class="fas fa-minus" style="font-size:0.55rem;"></i></button>
+                                    <span>${item.qty}</span>
+                                    <button onclick="updateCartQty(${i},+1)"><i class="fas fa-plus" style="font-size:0.55rem;"></i></button>
+                                </div>
+                                <button class="remove-item" onclick="removeFromCart(${i})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="cart-price">${fmt(item.price * item.qty)}</div>
+                    </div>`;
+            });
+        }
+
+        badge.textContent = qty;
+        document.getElementById('cart-subtotal').textContent = fmt(total);
+        document.getElementById('cart-total-price').textContent = fmt(total);
+    }
+
+    /* ════════════════════════════════════════════
+       CHECKOUT
+    ════════════════════════════════════════════ */
+    function openCheckout() {
+        if (!cart.length) { showToast('Adicione itens ao carrinho primeiro!', 'fa-triangle-exclamation'); return; }
+        document.getElementById('cart-sidebar').classList.remove('active');
+        goToStep('1');
+        openOverlay('overlay-checkout');
+    }
+
+    function goToStep(stepId) {
+        document.querySelectorAll('.checkout-step').forEach(s => s.classList.remove('active'));
+        document.getElementById(`step-${stepId}`)?.classList.add('active');
+
+        const map = { '1': 0, 'payment': 1, 'review': 2, 'success': 3 };
+        const idx = map[stepId] ?? 0;
+        document.querySelectorAll('.tab-step').forEach((t, i) => {
+            t.classList.toggle('active', i === idx);
+            if (i < idx) t.classList.add('done');
+        });
+
+        if (stepId === 'review') buildReview();
+    }
+
+    function buildReview() {
+        let total = 0;
+        const items = document.getElementById('order-summary-items');
+        items.innerHTML = cart.map(item => {
+            total += item.price * item.qty;
+            return `
+                <div class="order-summary-row">
+                    <div class="order-thumb"><img src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/48x48/141414/D4AF37?text=+'" ></div>
+                    <div>
+                        <div class="order-item-name">${item.name}</div>
+                        <div class="order-item-meta">TAM: ${item.size} · Qtd: ${item.qty}</div>
+                    </div>
+                    <div class="order-item-price">${fmt(item.price * item.qty)}</div>
+                </div>`;
+        }).join('');
+
+        document.getElementById('checkout-sub').textContent   = fmt(total);
+        document.getElementById('checkout-total').textContent = fmt(total);
+
+        const payBtn = document.getElementById('btn-pay');
+        if (currentPayMethod === 'pix') payBtn.innerHTML = '<i class="fas fa-check"></i> Confirmar Pagamento PIX';
+        else if (currentPayMethod === 'boleto') payBtn.innerHTML = '<i class="fas fa-barcode"></i> Gerar Boleto';
+        else payBtn.innerHTML = `<i class="fas fa-lock"></i> Pagar ${fmt(total)}`;
+    }
+
+    function selectPayMethod(method) {
+        currentPayMethod = method;
+        document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+        document.getElementById(`pm-${method}`)?.classList.add('active');
+        document.querySelectorAll('.pay-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`sec-${method}`)?.classList.add('active');
+    }
+
+    function processPayment() {
+        const btn = document.getElementById('btn-pay');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner"></span> Processando...';
+        btn.style.pointerEvents = 'none';
+
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.style.pointerEvents = '';
+            goToStep('success');
+            document.querySelectorAll('.tab-step').forEach(t => t.classList.add('done'));
+        }, 2200);
+    }
+
+    function finalizePurchase() {
+        cart = [];
+        updateCartUI();
+        closeOverlay('overlay-checkout');
+        showToast('Cowabunga! Obrigado pela compra! 🐢', 'fa-star');
+    }
+
+    /* ════════════════════════════════════════════
+       OVERLAYS
+    ════════════════════════════════════════════ */
+    function openOverlay(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeOverlay(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+
+    document.querySelectorAll('.overlay').forEach(ov => {
+        ov.addEventListener('click', e => { if (e.target === ov) closeOverlay(ov.id); });
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeOverlay('overlay-product');
+            closeOverlay('overlay-checkout');
+            document.getElementById('cart-sidebar').classList.remove('active');
+        }
+    });
+
+    /* ════════════════════════════════════════════
+       CARD FORMAT
+    ════════════════════════════════════════════ */
+    function formatCardNum(input) {
+        let v = input.value.replace(/\D/g,'').substring(0,16);
+        input.value = v.replace(/(.{4})/g,'$1 ').trim();
+        document.getElementById('cv-number').textContent = (v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim());
+    }
+
+    function formatExpiry(input) {
+        let v = input.value.replace(/\D/g,'').substring(0,4);
+        if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
+        input.value = v;
+        document.getElementById('cv-exp').textContent = v || 'MM/AA';
+    }
+
+    function copyPix() {
+        navigator.clipboard.writeText('pix@cowabungaf1.com.br').then(() => showToast('Chave PIX copiada!', 'fa-copy'));
+    }
+
+    function copyBoleto() {
+        navigator.clipboard.writeText('34191.09008 61207.727285 71140.960004 4 10670000025990')
+            .then(() => showToast('Linha digitável copiada!', 'fa-copy'));
+    }
+
+    /* ════════════════════════════════════════════
+       TOAST
+    ════════════════════════════════════════════ */
+    let _toastT;
+    function showToast(msg, icon = 'fa-circle-check') {
+        clearTimeout(_toastT);
+        const t = document.getElementById('toast');
+        t.querySelector('i').className = `fas ${icon}`;
+        document.getElementById('toast-text').textContent = msg;
+        t.classList.add('show');
+        _toastT = setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    /* ════════════════════════════════════════════
+       MASKS (CPF, Tel, CEP)
+    ════════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', () => {
+        const masks = [
+            ['field-cpf', v => v.replace(/\D/g,'').substring(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')],
+            ['field-tel', v => { let d = v.replace(/\D/g,'').substring(0,11); if(d.length>=11) return d.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3'); if(d.length>=7) return d.replace(/(\d{2})(\d{4})(\d*)/,'($1) $2-$3'); if(d.length>=3) return d.replace(/(\d{2})(\d*)/,'($1) $2'); return d; }],
+            ['field-cep', v => { let d = v.replace(/\D/g,'').substring(0,8); return d.length>5 ? d.replace(/(\d{5})(\d)/,'$1-$2') : d; }],
+        ];
+        masks.forEach(([id, fn]) => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', function() { this.value = fn(this.value); });
+        });
+    });
+
+    /* ════════════════════════════════════════════
+       SCROLL REVEAL
+    ════════════════════════════════════════════ */
+    const revObs = new IntersectionObserver((entries, obs) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left').forEach(el => revObs.observe(el));
+
+    /* ════════════════════════════════════════════
+       INIT
+    ════════════════════════════════════════════ */
+    if (requireLogin()) {
+        renderProducts();
+        updateCartUI();
+    }
+    </script>
+</body>
+</html>

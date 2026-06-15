@@ -1,0 +1,33 @@
+{
+  "name": "api_login",
+  "version": "1.0.0",
+  "description": "Bem-vindo ao repositório oficial do projeto **Cowabunga F1 Team**. Este projeto é uma plataforma completa inspirada no universo das Tartarugas Ninjas, trazendo a experiência de uma equipe de corrida (Grid, Tempos, Lojas, etc.) para os fãs, combinada com uma estética rica e na tematica dos tartarugas ninjas.",
+  "homepage": "https://github.com/jao091002/produto-final-completo#readme",
+  "bugs": {
+    "url": "https://github.com/jao091002/produto-final-completo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jao091002/produto-final-completo.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon api/server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "env": "^0.0.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.20.0",
+    "nodemon": "^3.1.14"
+  }
+}

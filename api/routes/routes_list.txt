@@ -1,0 +1,15 @@
+GET /users               – list users
+POST /users              – create user
+POST /users/login        – login
+PUT /users/:id           – update user
+DELETE /users/:id        – delete user
+GET /corredores          – list competitors with stats
+POST /corredores         – create competitor
+GET /corredores/ranking  – ranking of competitors
+GET /corredores/:id      – competitor details + laps
+PUT /corredores/:id      – update competitor
+DELETE /corredores/:id   – delete competitor
+GET /voltas              – list all laps
+POST /voltas             – create lap
+GET /voltas/:id          – get lap by id
+DELETE /voltas/:id       – delete lap

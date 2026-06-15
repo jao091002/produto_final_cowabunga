@@ -1,0 +1,35 @@
+/* dashboard-map.css */
+
+/* Ensure the circuit container scales responsively */
+.circuit-container {
+    width: 100%;
+    max-width: 500px; /* Adjust as needed */
+    margin: 0 auto;
+    aspect-ratio: 1 / 1; /* Keep square */
+    background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Track base and inner styling */
+.track-base {
+    border: 3px solid rgba(212,175,55,0.25);
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(212,175,55,0.15), inset 0 0 30px rgba(212,175,55,0.08);
+}
+
+.track-inner {
+    border: 2px dashed rgba(212,175,55,0.15);
+    border-radius: 50%;
+}
+
+/* Light car animations (reuse existing .car-light classes) */
+/* Pulse animations are defined in the main stylesheet; this file just ensures positioning works */
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .circuit-container {
+        max-width: 300px;
+    }
+}

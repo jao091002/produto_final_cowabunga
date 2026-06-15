@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso — Cowabunga F1 | Race With The Shield</title>
+ 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="common.js"></script>
+
+    <style>
+        /* ═══════════════════════════════════════
+           VARIABLES & RESET
+        ═══════════════════════════════════════ */
+        :root {
+            --gold:        #D4AF37;
+            --gold-light:  #F3E5AB;
+            --gold-mid:    #C9A227;
+            --gold-dim:    rgba(212,175,55,0.12);
+            --gold-glow:   rgba(212,175,55,0.35);
+            --green-deep:  #1A3320;
+            --green-light: #2A4B3C;
+            --black:       #050505;
+            --dark:        #0a0a0a;
+            --surface:     #0f0f0f;
+            --surface2:    #141414;
+            --border:      rgba(212,175,55,0.14);
+            --text-muted:  rgba(200,200,200,0.45);
+            --text-sub:    rgba(200,200,200,0.7);
+            --danger:      #c0392b;
+            --danger-glow: rgba(192,57,43,0.35);
+            --success:     #27ae60;
+            --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+        }
+ 
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
+        }
+ 
+        html { scroll-behavior: smooth; }
+ 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+ 
+        /* ═══════════════════════════════════════
+           CUSTOM CURSOR (igual à landing page)
+        ═══════════════════════════════════════ */
+        #custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 28px; height: 28px;
+            background-image: url('/fotos/cursor_cowabunga-removebg-preview.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            z-index: 999999;
+            transform: translate(-10%, -10%);
+            transition: transform 0.12s ease-out;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+        }
+        #cursor-dot {
+            position: fixed;
+            top: 0; left: 0;
+            width: 6px; height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999998;
+            transform: translate(-50%,-50%);
+            transition: transform 0.05s, opacity 0.2s;
+            box-shadow: 0 0 8px var(--gold);
+        }
+        body.clicking #custom-cursor { transform: translate(-10%,-10%) scale(0.75); }
+        body.clicking #cursor-dot    { transform: translate(-50%,-50%) scale(2.5); opacity: 0.5; }
+ 
+        /* ═══════════════════════════════════════
+           BACKGROUND LAYERS
+        ═══════════════════════════════════════ */
+        .bg-scene {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+ 
+        /* Grid lines */
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(212,175,55,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212,175,55,0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+ 
+        /* Ambient orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(26,51,32,0.6) 0%, transparent 70%);
+            top: -150px; right: -150px;
+            animation: orb-float-1 12s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 70%);
+            bottom: -100px; left: -100px;
+            animation: orb-float-2 15s ease-in-out infinite;
+        }
+        .orb-3 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(139,0,0,0.12) 0%, transparent 70%);
+            top: 40%; left: 10%;
+            animation: orb-float-3 10s ease-in-out infinite;
+        }
+ 
+        @keyframes orb-float-1 {
+            0%,100% { transform: translate(0,0); }
+            50%      { transform: translate(-40px, 40px); }
+        }
+        @keyframes orb-float-2 {
+            0%,100% { transform: translate(0,0); }
+            50%      { transform: translate(50px,-30px); }
+        }
+        @keyframes orb-float-3 {
+            0%,100% { transform: translate(0,0); opacity: 0.6; }
+            50%      { transform: translate(20px,20px); opacity: 1; }
+        }
+ 
+        /* Scan line */
+        .scan-line {
+            position: absolute;
+            top: -2px; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(212,175,55,0.5), transparent);
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scan {
+            0%   { top: -2px; opacity: 0; }
+            5%   { opacity: 1; }
+            95%  { opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
+        }
+ 
+        /* ═══════════════════════════════════════
+           PAGE LOADER
+        ═══════════════════════════════════════ */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: opacity 0.6s ease 0.2s, visibility 0.6s ease 0.2s;
+        }
+        #page-loader.done { opacity: 0; visibility: hidden; }
+        .loader-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 50%, #C9A227 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .loader-bar {
+            width: 160px; height: 1px;
+            background: rgba(212,175,55,0.15);
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            animation: load-fill 1s var(--ease-out) forwards 0.1s;
+        }
+        @keyframes load-fill { to { width: 100%; } }
+ 
+        /* ═══════════════════════════════════════
+           AUTH WRAPPER
+        ═══════════════════════════════════════ */
+        .auth-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+            padding: 1rem;
+            animation: wrapper-in 0.8s var(--ease-out) both;
+            animation-delay: 1.2s;
+            opacity: 0;
+        }
+        @keyframes wrapper-in {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+ 
+        /* ═══════════════════════════════════════
+           AUTH CARD
+        ═══════════════════════════════════════ */
+        .auth-card {
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.03) inset,
+                0 30px 80px rgba(0,0,0,0.9),
+                0 0 80px rgba(212,175,55,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+ 
+        /* Animated corner accents */
+        .auth-card::before,
+        .auth-card::after {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .auth-card::before {
+            top: -1px; left: -1px;
+            border-top: 2px solid var(--gold);
+            border-left: 2px solid var(--gold);
+        }
+        .auth-card::after {
+            bottom: -1px; right: -1px;
+            border-bottom: 2px solid var(--gold);
+            border-right: 2px solid var(--gold);
+        }
+ 
+        .corner-br { position: absolute; top: -1px; right: -1px; width: 20px; height: 20px; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); z-index: 1; pointer-events: none; }
+        .corner-bl { position: absolute; bottom: -1px; left: -1px; width: 20px; height: 20px; border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); z-index: 1; pointer-events: none; }
+ 
+        /* Top shimmer line */
+        .card-shimmer {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            opacity: 0.5;
+        }
+ 
+        /* Card inner padding */
+        .card-body {
+            padding: 2.5rem 2.5rem 2rem;
+        }
+ 
+        /* ═══════════════════════════════════════
+           LOGO HEADER
+        ═══════════════════════════════════════ */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .auth-logo-img {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            border: 1px solid rgba(212,175,55,0.4);
+            object-fit: cover;
+            margin-bottom: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 20px rgba(212,175,55,0.2);
+            transition: box-shadow 0.3s ease;
+        }
+        .auth-logo-img:hover { box-shadow: 0 0 35px rgba(212,175,55,0.5); }
+        .auth-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            background: linear-gradient(135deg, #D4AF37, #F3E5AB, #C9A227);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: shine 6s linear infinite;
+        }
+        @keyframes shine {
+            0%   { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+ 
+        /* ═══════════════════════════════════════
+           VIEW MANAGEMENT
+        ═══════════════════════════════════════ */
+        .auth-view {
+            display: none;
+        }
+        .auth-view.active {
+            display: block;
+            animation: view-in 0.4s var(--ease-out) both;
+        }
+        @keyframes view-in {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+ 
+        /* ═══════════════════════════════════════
+           VIEW TITLE
+        ═══════════════════════════════════════ */
+        .view-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 0.4rem;
+        }
+        .view-title span { color: var(--gold); }
+        .view-subtitle {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 1.75rem;
+        }
+ 
+        /* ═══════════════════════════════════════
+           FORM GROUPS
+        ═══════════════════════════════════════ */
+        .form-group {
+            margin-bottom: 1.1rem;
+            position: relative;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.7rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        .form-group:focus-within .form-label { color: var(--gold); }
+ 
+        .input-wrapper {
+            position: relative;
+        }
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            transition: color 0.3s;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .form-group:focus-within .input-icon { color: var(--gold); }
+ 
+        .form-input {
+            width: 100%;
+            padding: 0.85rem 2.8rem 0.85rem 2.8rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            border-radius: 2px;
+            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+            -webkit-autofill-override: none;
+        }
+        .form-input:-webkit-autofill,
+        .form-input:-webkit-autofill:hover,
+        .form-input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #0f0f0f inset !important;
+            -webkit-text-fill-color: #fff !important;
+            caret-color: #fff;
+        }
+        .form-input::placeholder { color: rgba(255,255,255,0.2); }
+        .form-input:focus {
+            border-color: rgba(212,175,55,0.5);
+            background: rgba(212,175,55,0.03);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.08), inset 0 0 0 1px rgba(212,175,55,0.1);
+        }
+        .form-input.error-field {
+            border-color: rgba(192,57,43,0.6);
+            box-shadow: 0 0 0 3px rgba(192,57,43,0.08);
+        }
+        .form-input.success-field {
+            border-color: rgba(39,174,96,0.5);
+        }
+ 
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+        .toggle-password:hover { color: var(--gold); }
+ 
+        /* Inline field error */
+        .field-error {
+            display: none;
+            font-size: 0.68rem;
+            color: #e74c3c;
+            margin-top: 0.35rem;
+            padding-left: 0.25rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.05em;
+        }
+        .field-error.show { display: block; animation: err-in 0.3s var(--ease-out); }
+        @keyframes err-in {
+            from { opacity: 0; transform: translateX(-4px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+ 
+        /* Password strength meter */
+        .strength-bar-wrap {
+            display: none;
+            margin-top: 0.5rem;
+            gap: 4px;
+        }
+        .strength-bar-wrap.show { display: flex; }
+        .strength-seg {
+            flex: 1; height: 2px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+        .strength-seg.weak   { background: #e74c3c; }
+        .strength-seg.medium { background: #f39c12; }
+        .strength-seg.strong { background: #27ae60; }
+        .strength-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            margin-top: 0.3rem;
+            color: var(--text-muted);
+            display: none;
+        }
+        .strength-label.show { display: block; }
+ 
+        /* ═══════════════════════════════════════
+           FORGOT LINK
+        ═══════════════════════════════════════ */
+        .forgot-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+        .link-btn {
+            background: none;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+            padding: 0;
+        }
+        .link-btn:hover { color: var(--gold); }
+ 
+        /* ═══════════════════════════════════════
+           SUBMIT BUTTON
+        ═══════════════════════════════════════ */
+        .btn-submit {
+            position: relative;
+            width: 100%;
+            padding: 0.95rem;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: color 0.35s ease, box-shadow 0.35s ease;
+            margin-top: 0.5rem;
+            z-index: 0;
+        }
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.35s var(--ease-out);
+        }
+        .btn-submit:hover {
+            color: var(--black);
+            box-shadow: 0 10px 40px rgba(212,175,55,0.6), inset 0 2px 5px rgba(212,175,55,0.2);
+            transform: translateY(-2px);
+        }
+        .btn-submit:hover::before { transform: scaleX(1); }
+        .btn-submit:disabled {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+ 
+        .btn-submit .btn-text { display: inline-flex; align-items: center; gap: 0.5rem; transition: opacity 0.2s; }
+        .btn-submit .btn-loader { display: none; align-items: center; gap: 0.5rem; }
+        .btn-submit.loading .btn-text   { display: none; }
+        .btn-submit.loading .btn-loader { display: inline-flex; }
+        .btn-submit.done-state {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .btn-submit.done-state::before { display: none; }
+ 
+        /* Spinner */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .fa-spinner { animation: spin 0.8s linear infinite; }
+ 
+        /* ═══════════════════════════════════════
+           FORM FOOTER
+        ═══════════════════════════════════════ */
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.05em;
+        }
+        .form-footer .link-btn {
+            font-size: 0.78rem;
+            color: var(--gold);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(212,175,55,0.3);
+            padding-bottom: 1px;
+        }
+        .form-footer .link-btn:hover { border-bottom-color: var(--gold); color: var(--gold-light); }
+ 
+        /* ═══════════════════════════════════════
+           DIVIDER
+        ═══════════════════════════════════════ */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+        }
+        .divider-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+        }
+ 
+        /* ═══════════════════════════════════════
+           BACK LINK
+        ═══════════════════════════════════════ */
+        .back-to-site {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-to-site:hover { color: var(--gold); }
+        .back-to-site i { font-size: 0.65rem; }
+ 
+        /* ═══════════════════════════════════════
+           TOAST
+        ═══════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--gold);
+            padding: 0.8rem 1.5rem;
+            border-radius: 2px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7), 0 0 20px rgba(212,175,55,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s var(--ease-out);
+            z-index: 9999;
+            white-space: nowrap;
+            max-width: 90vw;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        .toast.toast-error {
+            border-color: rgba(192,57,43,0.4);
+            color: #e74c3c;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7), 0 0 20px rgba(192,57,43,0.1);
+        }
+        .toast.toast-success {
+            border-color: rgba(39,174,96,0.4);
+            color: #2ecc71;
+        }
+ 
+        /* ═══════════════════════════════════════
+           FORGOT BACK PARAGRAPH
+        ═══════════════════════════════════════ */
+        .forgot-info {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+ 
+        /* ═══════════════════════════════════════
+           SECURITY BADGES
+        ═══════════════════════════════════════ */
+        .security-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            padding: 1rem 2.5rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .sec-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            color: rgba(200,200,200,0.25);
+        }
+        .sec-badge i { font-size: 0.65rem; color: rgba(212,175,55,0.3); }
+ 
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 520px) {
+            .card-body { padding: 2rem 1.5rem 1.5rem; }
+            .back-to-site { display: none; }
+        }
+    </style>
+</head>
+<body>
+ 
+    <!-- ─── CURSORS ────────────────────────── -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-dot"></div>
+ 
+    <!-- ─── PAGE LOADER ───────────────────── -->
+    <div id="page-loader">
+        <span class="loader-logo">COWABUNGA F1</span>
+        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        <span style="font-family:'Orbitron',sans-serif;font-size:0.55rem;letter-spacing:0.3em;color:rgba(255,255,255,0.15);">SISTEMA SEGURO</span>
+    </div>
+ 
+    <!-- ─── BACKGROUND ────────────────────── -->
+    <div class="bg-scene">
+        <div class="bg-grid"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="scan-line"></div>
+    </div>
+ 
+    <!-- ─── AUTH WRAPPER ──────────────────── -->
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="corner-br"></div>
+            <div class="corner-bl"></div>
+            <div class="card-shimmer"></div>
+ 
+            <div class="card-body">
+ 
+                <!-- Logo -->
+                <div class="auth-header">
+                    <a href="../index.html">
+                        <img src="/fotos/logo-1.jpg" alt="Cowabunga F1" class="auth-logo-img"
+                             onerror="this.style.display='none'">
+                    </a>
+                    <div class="auth-brand">COWABUNGA F1</div>
+                </div>
+ 
+                <!-- ════ VIEW: LOGIN ════ -->
+                <div id="view-login" class="auth-view active">
+                    <h2 class="view-title">PORTAL <span>NINJA</span></h2>
+                    <p class="view-subtitle">Autenticação segura · Acesso ao covil</p>
+ 
+                    <form id="form-login" novalidate autocomplete="off" onsubmit="processAuth(event,'login')">
+                        <div class="form-group">
+                            <label class="form-label">E-MAIL</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope input-icon"></i>
+                                <input type="email" id="login-email" class="form-input"
+                                       placeholder="mestre@splinter.com"
+                                       autocomplete="email" spellcheck="false">
+                            </div>
+                            <div class="field-error" id="login-email-err">E-mail inválido.</div>
+                        </div>
+ 
+                        <div class="form-group">
+                            <label class="form-label">SENHA</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock input-icon"></i>
+                                <input type="password" id="login-pass" class="form-input"
+                                       placeholder="••••••••" autocomplete="current-password">
+                                <i class="fa-solid fa-eye toggle-password" onclick="togglePwd('login-pass',this)"></i>
+                            </div>
+                            <div class="field-error" id="login-pass-err">Senha obrigatória.</div>
+                        </div>
+ 
+                        <div class="forgot-row">
+                            <button type="button" class="link-btn" onclick="switchView('view-forgot')">ESQUECEU A SENHA?</button>
+                        </div>
+ 
+                        <button type="submit" class="btn-submit" id="btn-login">
+                            <span class="btn-text"><i class="fa-solid fa-shield-halved"></i> ENTRAR </span>
+                            <span class="btn-loader"><i class="fa-solid fa-spinner"></i> VERIFICANDO...</span>
+                        </button>
+                    </form>
+ 
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <span class="divider-text">OU</span>
+                        <div class="divider-line"></div>
+                    </div>
+ 
+                    <div class="form-footer">
+                        Novo recruta? <button type="button" class="link-btn" onclick="switchView('view-register')">CADASTRE-SE AQUI</button>
+                    </div>
+                </div>
+ 
+                <!-- ════ VIEW: REGISTER ════ -->
+                <div id="view-register" class="auth-view">
+                    <h2 class="view-title">NOVO <span>MUTANTE</span></h2>
+                    <p class="view-subtitle">Junte-se à equipe mais veloz do grid</p>
+ 
+                    <form id="form-register" novalidate autocomplete="off" onsubmit="processAuth(event,'register')">
+                        <div class="form-group">
+                            <label class="form-label">NOME COMPLETO</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-user input-icon"></i>
+                                <input type="text" id="reg-name" class="form-input"
+                                       placeholder="Casey Jones" autocomplete="off">
+                            </div>
+                            <div class="field-error" id="reg-name-err">Nome deve ter ao menos 3 caracteres.</div>
+                        </div>
+ 
+                        <div class="form-group">
+                            <label class="form-label">E-MAIL</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope input-icon"></i>
+                                <input type="email" id="reg-email" class="form-input"
+                                       placeholder="casey@ny.com" autocomplete="off" spellcheck="false">
+                            </div>
+                            <div class="field-error" id="reg-email-err">E-mail inválido.</div>
+                        </div>
+ 
+                        <div class="form-group">
+                            <label class="form-label">SENHA</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock input-icon"></i>
+                                <input type="password" id="reg-pass" class="form-input"
+                                       placeholder="••••••••" autocomplete="new-password"
+                                       oninput="checkStrength(this.value)">
+                                <i class="fa-solid fa-eye toggle-password" onclick="togglePwd('reg-pass',this)"></i>
+                            </div>
+                            <!-- Strength meter -->
+                            <div class="strength-bar-wrap" id="strength-bar">
+                                <div class="strength-seg" id="seg-1"></div>
+                                <div class="strength-seg" id="seg-2"></div>
+                                <div class="strength-seg" id="seg-3"></div>
+                                <div class="strength-seg" id="seg-4"></div>
+                            </div>
+                            <div class="strength-label" id="strength-label"></div>
+                            <div class="field-error" id="reg-pass-err">Mínimo 8 caracteres.</div>
+                        </div>
+ 
+                        <div class="form-group">
+                            <label class="form-label">CONFIRMAR SENHA</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-shield-check input-icon"></i>
+                                <input type="password" id="reg-pass2" class="form-input"
+                                       placeholder="••••••••" autocomplete="new-password">
+                                <i class="fa-solid fa-eye toggle-password" onclick="togglePwd('reg-pass2',this)"></i>
+                            </div>
+                            <div class="field-error" id="reg-pass2-err">As senhas não coincidem.</div>
+                        </div>
+ 
+                        <button type="submit" class="btn-submit" id="btn-register">
+                            <span class="btn-text"><i class="fa-solid fa-user-ninja"></i> CRIAR CONTA</span>
+                            <span class="btn-loader"><i class="fa-solid fa-spinner"></i> PROCESSANDO...</span>
+                        </button>
+                    </form>
+ 
+                    <div class="form-footer" style="margin-top:1.25rem;">
+                        Já é da equipe? <button type="button" class="link-btn" onclick="switchView('view-login')">FAZER LOGIN</button>
+                    </div>
+                </div>
+ 
+                <!-- ════ VIEW: FORGOT ════ -->
+                <div id="view-forgot" class="auth-view">
+                    <h2 class="view-title">RESGATAR <span>ACESSO</span></h2>
+                    <p class="view-subtitle">Enviaremos um link tático ao seu e-mail</p>
+ 
+                    <p class="forgot-info">
+                        Digite o e-mail cadastrado e receba instruções para redefinir sua senha de acesso.
+                    </p>
+ 
+                    <form id="form-forgot" novalidate onsubmit="processAuth(event,'forgot')">
+                        <div class="form-group">
+                            <label class="form-label">E-MAIL CADASTRADO</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope input-icon"></i>
+                                <input type="email" id="forgot-email" class="form-input"
+                                       placeholder="mestre@splinter.com" autocomplete="email">
+                            </div>
+                            <div class="field-error" id="forgot-email-err">E-mail inválido.</div>
+                        </div>
+ 
+                        <button type="submit" class="btn-submit" id="btn-forgot">
+                            <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> ENVIAR LINK</span>
+                            <span class="btn-loader"><i class="fa-solid fa-spinner"></i> ENVIANDO...</span>
+                        </button>
+                    </form>
+ 
+                    <div class="form-footer">
+                        Lembrou? <button type="button" class="link-btn" onclick="switchView('view-login')">VOLTAR AO LOGIN</button>
+                    </div>
+                </div>
+ 
+            </div><!-- /card-body -->
+ 
+            <!-- Security badges -->
+            <div class="security-row">
+                <div class="sec-badge"><i class="fa-solid fa-lock"></i> SSL SEGURO</div>
+                <div class="sec-badge"><i class="fa-solid fa-shield-halved"></i> DADOS PROTEGIDOS</div>
+                <div class="sec-badge"><i class="fa-solid fa-eye-slash"></i> PRIVACIDADE</div>
+            </div>
+        </div><!-- /auth-card -->
+ 
+        <!-- Back to site -->
+        <a href="../index.html" class="back-to-site">
+            <i class="fa-solid fa-arrow-left"></i> VOLTAR À LANDING PAGE
+        </a>
+    </div><!-- /auth-wrapper -->
+ 
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-check-circle" id="toast-icon"></i>
+        <span id="toast-msg">—</span>
+    </div>
+ 
+    <!-- ─── SCRIPTS ────────────────────────── -->
+    <script>
+    /* ══════════════════════════════════════════════
+       PAGE LOADER
+    ══════════════════════════════════════════════ */
+    window.addEventListener('load', () => {
+        setTimeout(() => document.getElementById('page-loader').classList.add('done'), 1100);
+    });
+ 
+    /* ══════════════════════════════════════════════
+       CURSOR
+    ══════════════════════════════════════════════ */
+    (function() {
+        const cur = document.getElementById('custom-cursor');
+        const dot = document.getElementById('cursor-dot');
+        let mx = 0, my = 0, dx = 0, dy = 0;
+ 
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cur.style.left = mx + 'px';
+            cur.style.top  = my + 'px';
+        });
+ 
+        (function loop() {
+            dx += (mx - dx) * 0.14;
+            dy += (my - dy) * 0.14;
+            dot.style.left = dx + 'px';
+            dot.style.top  = dy + 'px';
+            requestAnimationFrame(loop);
+        })();
+ 
+        document.addEventListener('mousedown', () => document.body.classList.add('clicking'));
+        document.addEventListener('mouseup',   () => document.body.classList.remove('clicking'));
+    })();
+ 
+    /* ══════════════════════════════════════════════
+       VIEW SWITCHER
+    ══════════════════════════════════════════════ */
+    function switchView(id) {
+        document.querySelectorAll('.auth-view').forEach(v => v.classList.remove('active'));
+        const target = document.getElementById(id);
+        target.classList.add('active');
+        // Reset forms + errors in this view
+        target.querySelectorAll('form').forEach(f => f.reset());
+        target.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+        target.querySelectorAll('.form-input').forEach(i => {
+            i.classList.remove('error-field','success-field');
+        });
+        resetStrength();
+    }
+ 
+    /* ══════════════════════════════════════════════
+       TOGGLE PASSWORD VISIBILITY
+    ══════════════════════════════════════════════ */
+    function togglePwd(id, icon) {
+        const inp = document.getElementById(id);
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            icon.classList.replace('fa-eye','fa-eye-slash');
+        } else {
+            inp.type = 'password';
+            icon.classList.replace('fa-eye-slash','fa-eye');
+        }
+    }
+ 
+    /* ══════════════════════════════════════════════
+       VALIDATION HELPERS
+    ══════════════════════════════════════════════ */
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+ 
+    function setErr(fieldId, errId, msg) {
+        const f = document.getElementById(fieldId);
+        const e = document.getElementById(errId);
+        f.classList.add('error-field');
+        f.classList.remove('success-field');
+        if (msg) e.textContent = msg;
+        e.classList.add('show');
+        return false;
+    }
+ 
+    function clearErr(fieldId, errId) {
+        const f = document.getElementById(fieldId);
+        const e = document.getElementById(errId);
+        f.classList.remove('error-field');
+        f.classList.add('success-field');
+        e.classList.remove('show');
+        return true;
+    }
+ 
+    function validateEmail(val, fieldId, errId) {
+        if (!val || !EMAIL_RE.test(val)) return setErr(fieldId, errId, 'E-mail inválido.');
+        return clearErr(fieldId, errId);
+    }
+ 
+    function validateMin(val, min, fieldId, errId, msg) {
+        if (!val || val.trim().length < min) return setErr(fieldId, errId, msg);
+        return clearErr(fieldId, errId);
+    }
+ 
+    /* ══════════════════════════════════════════════
+       PASSWORD STRENGTH METER
+    ══════════════════════════════════════════════ */
+    function checkStrength(val) {
+        const wrap  = document.getElementById('strength-bar');
+        const label = document.getElementById('strength-label');
+        const segs  = [1,2,3,4].map(n => document.getElementById('seg-'+n));
+ 
+        if (!val) { resetStrength(); return; }
+ 
+        wrap.classList.add('show');
+        label.classList.add('show');
+ 
+        let score = 0;
+        if (val.length >= 8)             score++;
+        if (/[A-Z]/.test(val))           score++;
+        if (/[0-9]/.test(val))           score++;
+        if (/[^A-Za-z0-9]/.test(val))    score++;
+ 
+        segs.forEach(s => s.className = 'strength-seg');
+ 
+        const classes = ['weak','weak','medium','strong'];
+        const labels  = ['MUITO FRACA','FRACA','MÉDIA','FORTE'];
+        const colors  = ['#e74c3c','#e67e22','#f39c12','#27ae60'];
+ 
+        for (let i = 0; i < score; i++) segs[i].classList.add(classes[score-1]);
+        label.textContent = labels[score-1] || '';
+        label.style.color = colors[score-1] || '';
+    }
+ 
+    function resetStrength() {
+        document.getElementById('strength-bar').classList.remove('show');
+        document.getElementById('strength-label').classList.remove('show');
+        [1,2,3,4].forEach(n => document.getElementById('seg-'+n).className = 'strength-seg');
+    }
+ 
+    /* ══════════════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════════════ */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        clearTimeout(toastTimer);
+        const t    = document.getElementById('toast');
+        const icon = document.getElementById('toast-icon');
+        const span = document.getElementById('toast-msg');
+ 
+        t.className = 'toast';
+        icon.className = type === 'error'
+            ? 'fa-solid fa-triangle-exclamation'
+            : type === 'success'
+                ? 'fa-solid fa-check-circle'
+                : 'fa-solid fa-circle-info';
+ 
+        if (type === 'error')   t.classList.add('toast-error');
+        if (type === 'success') t.classList.add('toast-success');
+ 
+        span.textContent = msg;
+        t.classList.add('show');
+        toastTimer = setTimeout(() => t.classList.remove('show'), 3800);
+    }
+ 
+    /* ══════════════════════════════════════════════
+       BUTTON STATE HELPERS
+    ══════════════════════════════════════════════ */
+    function btnLoading(id, on) {
+        const b = document.getElementById(id);
+        if (on) { b.classList.add('loading'); b.disabled = true; }
+        else    { b.classList.remove('loading'); b.disabled = false; }
+    }
+ 
+    function btnDone(id, label) {
+        const b = document.getElementById(id);
+        b.classList.remove('loading');
+        b.classList.add('done-state');
+        b.querySelector('.btn-text').innerHTML = `<i class="fa-solid fa-check"></i> ${label}`;
+        b.querySelector('.btn-loader').style.display = 'none';
+    }
+ 
+    function btnReset(id, innerHTML) {
+        const b = document.getElementById(id);
+        b.className = 'btn-submit';
+        b.disabled  = false;
+        b.querySelector('.btn-text').innerHTML   = innerHTML;
+        b.querySelector('.btn-loader').style.display = '';
+    }
+ 
+    /* ══════════════════════════════════════════════
+       SANITIZE (XSS prevention — strip tags)
+    ══════════════════════════════════════════════ */
+    function sanitize(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+ 
+    /* ══════════════════════════════════════════════
+       RATE LIMITER (basic — in-memory per session)
+    ══════════════════════════════════════════════ */
+    const _attempts = {};
+
+    function rateLimit(key, max, windowMs) {
+        const now = Date.now();
+        if (!_attempts[key]) _attempts[key] = [];
+        _attempts[key] = _attempts[key].filter(t => now - t < windowMs);
+        if (_attempts[key].length >= max) return false;
+        _attempts[key].push(now);
+        return true;
+    }
+ 
+    /* ══════════════════════════════════════════════
+       MAIN FORM PROCESSOR
+    ══════════════════════════════════════════════ */
+    async function processAuth(e, action) {
+        e.preventDefault();
+ 
+        // ── LOGIN ──────────────────────────────
+        if (action === 'login') {
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass  = document.getElementById('login-pass').value;
+ 
+            let valid = true;
+            valid = validateEmail(email, 'login-email', 'login-email-err') && valid;
+            valid = validateMin(pass, 1, 'login-pass', 'login-pass-err', 'Senha obrigatória.') && valid;
+            if (!valid) return;
+ 
+            // Rate limit: 5 attempts / 2 min
+            if (!rateLimit('login', 5, 120000)) {
+                showToast('Muitas tentativas. Aguarde 2 minutos.', 'error');
+                return;
+            }
+ 
+            btnLoading('btn-login', true);
+            await delay(1600);
+
+            try {
+                const response = await apiFetch('/users/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, senha: pass })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    btnLoading('btn-login', false);
+                    setErr('login-pass', 'login-pass-err', data.erro || 'E-mail ou senha incorretos.');
+                    showToast(data.erro || 'Credenciais inválidas. Tente novamente.', 'error');
+                    return;
+                }
+
+                setAuthSession(data.token, data.user);
+                btnDone('btn-login', 'ACESSO CONCEDIDO');
+                showToast('Bem-vindo de volta, ' + sanitize(data.user.nome.split(' ')[0]) + '!', 'success');
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1400);
+            } catch (error) {
+                btnLoading('btn-login', false);
+                showToast('Erro de conexão com a API. Tente novamente.', 'error');
+                console.error('Login error:', error);
+            }
+        }
+ 
+        // ── REGISTER ───────────────────────────
+        else if (action === 'register') {
+            const name  = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const pass  = document.getElementById('reg-pass').value;
+            const pass2 = document.getElementById('reg-pass2').value;
+ 
+            let valid = true;
+            valid = validateMin(name, 3, 'reg-name', 'reg-name-err', 'Nome deve ter ao menos 3 caracteres.') && valid;
+            valid = validateEmail(email, 'reg-email', 'reg-email-err') && valid;
+            valid = validateMin(pass, 8, 'reg-pass', 'reg-pass-err', 'Mínimo 8 caracteres.') && valid;
+ 
+            if (pass !== pass2) {
+                setErr('reg-pass2', 'reg-pass2-err', 'As senhas não coincidem.');
+                valid = false;
+            } else if (pass.length >= 8) {
+                clearErr('reg-pass2', 'reg-pass2-err');
+            }
+ 
+            if (!valid) return;
+ 
+            // Rate limit: 3 registers / 10 min
+            if (!rateLimit('register', 3, 600000)) {
+                showToast('Limite de cadastros atingido. Tente mais tarde.', 'error');
+                return;
+            }
+ 
+            btnLoading('btn-register', true);
+
+            try {
+                const response = await apiFetch('/users', {
+                    method: 'POST',
+                    body: JSON.stringify({ nome: sanitize(name), email, senha: pass })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    btnLoading('btn-register', false);
+                    setErr('reg-email', 'reg-email-err', data.erro || 'Não foi possível cadastrar.');
+                    showToast(data.erro || 'Erro no cadastro. Tente novamente.', 'error');
+                    return;
+                }
+
+                btnDone('btn-register', 'COWABUNGA!');
+                showToast('Conta criada com sucesso! Faca login para entrar.', 'success');
+                setTimeout(() => {
+                    btnReset('btn-register', '<i class="fa-solid fa-user-plus"></i> CRIAR CONTA');
+                    switchView('view-login');
+                    document.getElementById('login-email').value = email;
+                    document.getElementById('login-pass').focus();
+                }, 1500);
+            } catch (error) {
+                btnLoading('btn-register', false);
+                showToast('Erro de conexão com a API. Tente novamente.', 'error');
+                console.error('Register error:', error);
+            }
+        }
+ 
+        // ── FORGOT ─────────────────────────────
+        else if (action === 'forgot') {
+            const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+ 
+            if (!validateEmail(email, 'forgot-email', 'forgot-email-err')) return;
+ 
+            // Rate limit: 3 resets / 5 min
+            if (!rateLimit('forgot', 3, 300000)) {
+                showToast('Muitas solicitações. Aguarde 5 minutos.', 'error');
+                return;
+            }
+ 
+            btnLoading('btn-forgot', true);
+            await delay(2000);
+ 
+            // Always show success (don't reveal if email exists — security best practice)
+            btnReset('btn-forgot', '<i class="fa-solid fa-paper-plane"></i> ENVIAR LINK');
+            showToast('Se o e-mail existir, o link foi enviado!', 'success');
+            document.getElementById('form-forgot').reset();
+            clearErr('forgot-email', 'forgot-email-err');
+            setTimeout(() => switchView('view-login'), 2200);
+        }
+    }
+ 
+    /* Helper */
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+ 
+    /* ══════════════════════════════════════════════
+       REAL-TIME INPUT VALIDATION (UX improvement)
+    ══════════════════════════════════════════════ */
+    function liveValidate(inputId, errId, validatorFn) {
+        const el = document.getElementById(inputId);
+        if (!el) return;
+        el.addEventListener('blur', () => validatorFn(el.value.trim(), inputId, errId));
+    }
+ 
+    liveValidate('login-email',  'login-email-err',  validateEmail);
+    liveValidate('reg-email',    'reg-email-err',    validateEmail);
+    liveValidate('forgot-email', 'forgot-email-err', validateEmail);
+ 
+    document.getElementById('reg-name')?.addEventListener('blur', e => {
+        validateMin(e.target.value.trim(), 3, 'reg-name', 'reg-name-err', 'Nome deve ter ao menos 3 caracteres.');
+    });
+    document.getElementById('reg-pass')?.addEventListener('blur', e => {
+        validateMin(e.target.value, 8, 'reg-pass', 'reg-pass-err', 'Mínimo 8 caracteres.');
+    });
+    document.getElementById('reg-pass2')?.addEventListener('blur', e => {
+        const p1 = document.getElementById('reg-pass')?.value || '';
+        if (e.target.value !== p1) setErr('reg-pass2','reg-pass2-err','As senhas não coincidem.');
+        else if (e.target.value.length >= 8) clearErr('reg-pass2','reg-pass2-err');
+    });
+ 
+    /* ══════════════════════════════════════════════
+       PREVENT PASTE on confirm password (extra UX)
+    ══════════════════════════════════════════════ */
+    document.getElementById('reg-pass2')?.addEventListener('paste', e => e.preventDefault());
+
+    /* ══════════════════════════════════════════════
+       AUTO-SWITCH TO REGISTER IF ?register PARAM
+    ══════════════════════════════════════════════ */
+    window.addEventListener('load', () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('register')) {
+            switchView('view-register');
+        }
+    });
+ 
+    </script>
+</body>
+</html>

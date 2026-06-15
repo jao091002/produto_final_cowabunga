@@ -1,0 +1,91 @@
+/* Common Styles for UI/UX Revamp */
+:root {
+  /* Existing variables are redefined for consistency */
+  --gold: #D4AF37;
+  --gold-light: #F3E5AB;
+  --gold-mid: #C9A227;
+  --gold-dim: rgba(212,175,55,0.12);
+  --gold-glow: rgba(212,175,55,0.35);
+  --green-deep: #1A3320;
+  --green-light: #2A4B3C;
+  --black: #050505;
+  --dark: #0a0a0a;
+  --surface: #0f0f0f;
+  --surface2: #141414;
+  --border: rgba(212,175,55,0.14);
+  --text-muted: rgba(200,200,200,0.45);
+  --text-sub: rgba(200,200,200,0.7);
+  --danger: #c0392b;
+  --danger-glow: rgba(192,57,43,0.35);
+  --success: #27ae60;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* New UI tokens */
+  --nav-tab-padding: 0.75rem 1.25rem;
+  --nav-tab-font: 'Orbitron', sans-serif;
+  --nav-tab-size: 0.62rem;
+  --anim-duration: 0.6s; /* longer per user choice */
+}
+
+/* 3D Tab Hover Effect (flip) */
+.nav-right a {
+  display: inline-block;
+  perspective: 600px;
+  padding: var(--nav-tab-padding);
+  font-family: var(--nav-tab-font);
+  font-size: var(--nav-tab-size);
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 6px;
+  transition: transform var(--anim-duration) var(--ease-out),
+              color var(--anim-duration) var(--ease-out),
+              border-color var(--anim-duration) var(--ease-out),
+              background var(--anim-duration) var(--ease-out);
+  transform-style: preserve-3d;
+}
+.nav-right a:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(212,175,55,0.1);
+  transform: rotateY(15deg) translateZ(20px);
+}
+
+/* Ripple effect for buttons */
+.btn-submit,
+.tab-button {
+  position: relative;
+  overflow: hidden;
+}
+.btn-submit::after,
+.tab-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, var(--gold) 10%, transparent 10%);
+  transform: scale(0);
+  opacity: 0.6;
+  transition: transform var(--anim-duration) var(--ease-out),
+              opacity var(--anim-duration) var(--ease-out);
+  pointer-events: none;
+}
+.btn-submit:active::after,
+.tab-button:active::after {
+  transform: scale(2);
+  opacity: 0;
+}
+
+/* Layout padding adjustments */
+.auth-card .card-body,
+.auth-wrapper,
+.auth-card {
+  padding: 2rem; /* desktop */
+}
+@media (max-width: 520px) {
+  .auth-card .card-body,
+  .auth-wrapper,
+  .auth-card {
+    padding: 1rem; /* mobile */
+  }
+}
+
+/* Ensure common stylesheet doesn't override page‑specific overrides */

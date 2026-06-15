@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self';">
+    <title>Dashboard — Cowabunga F1 | Race With The Shield</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="common.js"></script>
+
+    <style>
+        /* ═══════════════════════════════════════
+           VARIABLES & RESET
+        ═══════════════════════════════════════ */
+        :root {
+            --gold:        #D4AF37;
+            --gold-light:  #F3E5AB;
+            --gold-mid:    #C9A227;
+            --gold-dim:    rgba(212,175,55,0.12);
+            --gold-glow:   rgba(212,175,55,0.35);
+            --green-deep:  #1A3320;
+            --green-light: #2A4B3C;
+            --black:       #050505;
+            --dark:        #0a0a0a;
+            --surface:     #0f0f0f;
+            --surface2:    #141414;
+            --border:      rgba(212,175,55,0.14);
+            --text-muted:  rgba(200,200,200,0.45);
+            --text-sub:    rgba(200,200,200,0.7);
+            --danger:      #c0392b;
+            --danger-glow: rgba(192,57,43,0.35);
+            --success:     #27ae60;
+            --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+            --sidebar-w:   260px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════
+           SIDEBAR NAV
+        ═══════════════════════════════════════ */
+        .sidebar {
+            width: var(--sidebar-w);
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--dark) 0%, rgba(10,15,10,0.98) 100%);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+            box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+            transition: transform 0.35s var(--ease-out);
+        }
+
+        .sidebar-logo {
+            padding: 1.8rem 1.5rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-mid));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: #000; font-weight: 900;
+            box-shadow: 0 0 20px var(--gold-glow);
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.08em;
+            line-height: 1.2;
+        }
+
+        .sidebar-logo-sub {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.2rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-nav::-webkit-scrollbar { width: 3px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .nav-section-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            padding: 0.8rem 0.75rem 0.4rem;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.25s var(--ease-out);
+            text-transform: none;
+            letter-spacing: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            text-align: left;
+        }
+
+        .nav-btn i {
+            width: 18px;
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+
+        .nav-btn:hover {
+            background: rgba(212,175,55,0.08);
+            color: var(--gold);
+        }
+
+        .nav-btn:hover i { opacity: 1; }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08));
+            color: var(--gold);
+            border: 1px solid rgba(212,175,55,0.25);
+            box-shadow: 0 4px 16px rgba(212,175,55,0.12);
+        }
+
+        .nav-btn.active i { opacity: 1; }
+
+        .nav-btn.danger {
+            color: rgba(192,57,43,0.7);
+        }
+
+        .nav-btn.danger:hover {
+            background: rgba(192,57,43,0.12);
+            color: #e74c3c;
+        }
+
+        .nav-btn.green {
+            color: rgba(39,174,96,0.7);
+        }
+
+        .nav-btn.green:hover {
+            background: rgba(39,174,96,0.12);
+            color: var(--success);
+        }
+
+        .sidebar-footer {
+            padding: 1rem 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+        }
+
+        .sidebar-user-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-deep), var(--green-light));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            color: var(--gold);
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .sidebar-user-role {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.08em;
+        }
+
+        /* ═══════════════════════════════════════
+           MOBILE TOPBAR
+        ═══════════════════════════════════════ */
+        .topbar {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 1.2rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .topbar-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--gold);
+            width: 36px; height: 36px;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* ═══════════════════════════════════════
+           MAIN CONTENT
+        ═══════════════════════════════════════ */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            padding: 2.5rem;
+            max-width: 1200px;
+        }
+
+        /* ═══════════════════════════════════════
+           VIEWS
+        ═══════════════════════════════════════ */
+        .view {
+            display: none;
+            animation: fadeSlide 0.45s var(--ease-out);
+        }
+
+        .view.active { display: block; }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════
+           PAGE HEADER
+        ═══════════════════════════════════════ */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .page-sub {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* ═══════════════════════════════════════
+           STATS GRID
+        ═══════════════════════════════════════ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--surface), var(--surface2));
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 1.4rem 1.6rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s var(--ease-out);
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-box:hover {
+            border-color: rgba(212,175,55,0.4);
+            box-shadow: 0 12px 40px rgba(212,175,55,0.15);
+            transform: translateY(-3px);
+        }
+
+        .stat-box:hover::before { opacity: 1; }
+
+        .stat-icon {
+            font-size: 1.4rem;
+            color: var(--gold);
+            opacity: 0.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-top: 0.4rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* ═══════════════════════════════════════
+           CARDS & TABLES
+        ═══════════════════════════════════════ */
+        .card {
+            background: linear-gradient(135deg, rgba(15,15,15,0.9), rgba(20,20,20,0.7));
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+            transition: all 0.35s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(212,175,55,0.3);
+            box-shadow: 0 12px 48px rgba(212,175,55,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: var(--gold);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+
+        thead {
+            background: linear-gradient(90deg, rgba(212,175,55,0.1), rgba(212,175,55,0.04));
+        }
+
+        th {
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            border-bottom: 1px solid rgba(212,175,55,0.3);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--text-sub);
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: rgba(212,175,55,0.04); }
+
+        tr:last-child td { border-bottom: none; }
+
+        /* ═══════════════════════════════════════
+           BADGES
+        ═══════════════════════════════════════ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .badge-gold { background: rgba(212,175,55,0.15); color: var(--gold); border: 1px solid rgba(212,175,55,0.3); }
+        .badge-green { background: rgba(39,174,96,0.15); color: #27ae60; border: 1px solid rgba(39,174,96,0.3); }
+        .badge-pos1 { background: linear-gradient(135deg,rgba(212,175,55,0.3),rgba(212,175,55,0.1)); color: var(--gold); border: 1px solid rgba(212,175,55,0.5); }
+        .badge-pos2 { background: rgba(200,200,200,0.1); color: #aaa; border: 1px solid rgba(200,200,200,0.25); }
+        .badge-pos3 { background: rgba(205,127,50,0.15); color: #cd7f32; border: 1px solid rgba(205,127,50,0.3); }
+
+        /* ═══════════════════════════════════════
+           FORM ELEMENTS
+        ═══════════════════════════════════════ */
+        .form-container { max-width: 680px; }
+
+        .form-group { margin-bottom: 1.25rem; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.45rem;
+            color: var(--text-sub);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid rgba(212,175,55,0.18);
+            color: #fff;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s var(--ease-out);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.12), 0 0 20px rgba(212,175,55,0.15);
+            background: rgba(212,175,55,0.06);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .form-select option { background: var(--surface2); }
+
+        /* ═══════════════════════════════════════
+           BUTTONS
+        ═══════════════════════════════════════ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s var(--ease-out);
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 0.72rem;
+            padding: 0.7rem 1.4rem;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: #0a0a0a;
+            box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212,175,55,0.6);
+        }
+
+        .btn-primary:active { transform: translateY(-1px); }
+
+        .btn-secondary {
+            background: rgba(212,175,55,0.08);
+            border: 1.5px solid rgba(212,175,55,0.35);
+            color: var(--gold);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(212,175,55,0.18);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212,175,55,0.2);
+        }
+
+        .btn-danger {
+            background: rgba(192,57,43,0.12);
+            border: 1.5px solid rgba(192,57,43,0.35);
+            color: #e74c3c;
+            font-size: 0.68rem;
+            padding: 0.5rem 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(192,57,43,0.25);
+            border-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192,57,43,0.25);
+        }
+
+        .btn-info {
+            background: rgba(52,152,219,0.1);
+            border: 1.5px solid rgba(52,152,219,0.3);
+            color: #3498db;
+            font-size: 0.68rem;
+            padding: 0.5rem 0.9rem;
+        }
+
+        .btn-info:hover {
+            background: rgba(52,152,219,0.2);
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+
+        .btn-full { width: 100%; }
+
+        .action-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        /* ═══════════════════════════════════════
+           GRID LARGADA
+        ═══════════════════════════════════════ */
+        .grid-track {
+            position: relative;
+            padding: 1.5rem 0;
+        }
+
+        .grid-track-line {
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(212,175,55,0.3), transparent);
+            transform: translateX(-50%);
+        }
+
+        .grid-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .grid-row:nth-child(even) { justify-content: flex-end; }
+
+        .grid-card {
+            width: calc(50% - 2rem);
+            background: linear-gradient(135deg, var(--surface), var(--surface2));
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s var(--ease-out);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-card:hover {
+            border-color: rgba(212,175,55,0.4);
+            box-shadow: 0 8px 32px rgba(212,175,55,0.15);
+            transform: translateY(-2px);
+        }
+
+        .grid-card:hover::after { opacity: 1; }
+
+        .grid-pos {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            min-width: 2.5rem;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .grid-pos.p1 { color: var(--gold); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
+        .grid-pos.p2 { color: #bbb; }
+        .grid-pos.p3 { color: #cd7f32; }
+        .grid-pos.other { color: var(--text-muted); }
+
+        .grid-info { flex: 1; min-width: 0; }
+        .grid-name { font-weight: 700; font-size: 0.95rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .grid-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .grid-time { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--gold); font-weight: 700; white-space: nowrap; }
+
+        /* ═══════════════════════════════════════
+           RACING CIRCUIT
+        ═══════════════════════════════════════ */
+        .circuit-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            margin: 2rem 0;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .circuit-track {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .track-base {
+            position: absolute;
+            inset: 10%;
+            border: 3px solid rgba(212,175,55,0.25);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(212,175,55,0.15), inset 0 0 30px rgba(212,175,55,0.08);
+        }
+
+        .track-inner {
+            position: absolute;
+            inset: 25%;
+            border: 2px dashed rgba(212,175,55,0.15);
+            border-radius: 50%;
+        }
+
+        .track-center-logo {
+            position: absolute;
+            inset: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: rgba(212,175,55,0.25);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .car-light {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.1em;
+        }
+
+        .car-light.p1 {
+            background: radial-gradient(circle at 30% 30%, #FFD700, var(--gold));
+            box-shadow: 0 0 20px rgba(212,175,55,0.8), 0 0 40px rgba(212,175,55,0.5), 0 0 60px rgba(212,175,55,0.3), inset 0 0 10px rgba(255,255,255,0.3);
+            animation: pulse-p1 2s ease-in-out infinite, orbit-pulse 3s ease-in-out infinite;
+        }
+
+        .car-light.p2 {
+            background: radial-gradient(circle at 30% 30%, #e8e8e8, #bbb);
+            box-shadow: 0 0 15px rgba(200,200,200,0.6), 0 0 30px rgba(200,200,200,0.3), inset 0 0 8px rgba(255,255,255,0.2);
+            animation: pulse-p2 2.2s ease-in-out infinite, orbit-pulse 3s ease-in-out infinite 0.2s;
+        }
+
+        .car-light.p3 {
+            background: radial-gradient(circle at 30% 30%, #e8a76d, #cd7f32);
+            box-shadow: 0 0 15px rgba(205,127,50,0.6), 0 0 30px rgba(205,127,50,0.3), inset 0 0 8px rgba(255,255,255,0.15);
+            animation: pulse-p3 2.4s ease-in-out infinite, orbit-pulse 3s ease-in-out infinite 0.4s;
+        }
+
+        .car-light.other {
+            background: radial-gradient(circle at 30% 30%, #3498db, #2980b9);
+            box-shadow: 0 0 12px rgba(52,152,219,0.5), 0 0 24px rgba(52,152,219,0.2), inset 0 0 6px rgba(255,255,255,0.1);
+            animation: pulse-other 2.6s ease-in-out infinite, orbit-pulse 3s ease-in-out infinite 0.6s;
+        }
+
+        @keyframes pulse-p1 {
+            0%, 100% { box-shadow: 0 0 20px rgba(212,175,55,0.8), 0 0 40px rgba(212,175,55,0.5), 0 0 60px rgba(212,175,55,0.3), inset 0 0 10px rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 30px rgba(212,175,55,1), 0 0 50px rgba(212,175,55,0.7), 0 0 80px rgba(212,175,55,0.5), inset 0 0 15px rgba(255,255,255,0.4); }
+        }
+
+        @keyframes pulse-p2 {
+            0%, 100% { box-shadow: 0 0 15px rgba(200,200,200,0.6), 0 0 30px rgba(200,200,200,0.3), inset 0 0 8px rgba(255,255,255,0.2); }
+            50% { box-shadow: 0 0 25px rgba(200,200,200,0.8), 0 0 40px rgba(200,200,200,0.5), inset 0 0 12px rgba(255,255,255,0.3); }
+        }
+
+        @keyframes pulse-p3 {
+            0%, 100% { box-shadow: 0 0 15px rgba(205,127,50,0.6), 0 0 30px rgba(205,127,50,0.3), inset 0 0 8px rgba(255,255,255,0.15); }
+            50% { box-shadow: 0 0 25px rgba(205,127,50,0.8), 0 0 40px rgba(205,127,50,0.5), inset 0 0 12px rgba(255,255,255,0.2); }
+        }
+
+        @keyframes pulse-other {
+            0%, 100% { box-shadow: 0 0 12px rgba(52,152,219,0.5), 0 0 24px rgba(52,152,219,0.2), inset 0 0 6px rgba(255,255,255,0.1); }
+            50% { box-shadow: 0 0 20px rgba(52,152,219,0.7), 0 0 35px rgba(52,152,219,0.4), inset 0 0 10px rgba(255,255,255,0.15); }
+        }
+
+        @keyframes orbit-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .car-light:hover {
+            transform: scale(1.35);
+            z-index: 10;
+        }
+
+        .car-light:hover .car-info {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .car-info {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(15,15,15,0.95);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            white-space: nowrap;
+            font-size: 0.7rem;
+            color: var(--text-sub);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 20;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+
+        .car-info-name {
+            font-weight: 700;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .car-info-time {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+
+        /* ═══════════════════════════════════════
+           RANKING
+        ═══════════════════════════════════════ */
+        .ranking-row td:first-child {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
+        /* ═══════════════════════════════════════
+           LOADING & EMPTY STATES
+        ═══════════════════════════════════════ */
+        .state-loading,
+        .state-empty,
+        .state-error {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+        }
+
+        .state-loading i,
+        .state-empty i,
+        .state-error i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .state-error { color: rgba(231,76,60,0.7); }
+
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ═══════════════════════════════════════
+           TOAST
+        ═══════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            z-index: 9999;
+            max-width: 360px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+            transform: translateY(120%);
+            opacity: 0;
+            transition: transform 0.4s var(--ease-out), opacity 0.4s ease;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        .toast.success {
+            border-color: rgba(39,174,96,0.5);
+            box-shadow: 0 16px 48px rgba(39,174,96,0.15);
+        }
+
+        .toast.success i { color: var(--success); }
+
+        .toast.error {
+            border-color: rgba(192,57,43,0.5);
+            box-shadow: 0 16px 48px rgba(192,57,43,0.15);
+        }
+
+        .toast.error i { color: var(--danger); }
+
+        /* ═══════════════════════════════════════
+           MODAL
+        ═══════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 14px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+            transform: scale(0.94) translateY(16px);
+            transition: transform 0.35s var(--ease-out);
+        }
+
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); box-shadow: 8px 0 40px rgba(0,0,0,0.8); }
+            .main { margin-left: 0; padding-top: 60px; }
+            .topbar { display: flex; }
+            .container { padding: 1.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .grid-card { width: 100%; }
+            .grid-row:nth-child(even) { justify-content: flex-start; }
+        }
+
+        /* ═══════════════════════════════════════
+           SCROLLBAR
+        ═══════════════════════════════════════ */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">⚔</div>
+            <div>
+                <div class="sidebar-logo-text">COWABUNGA</div>
+                <div class="sidebar-logo-sub">F1 TEAM</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Visão Geral</div>
+            <button class="nav-btn active" data-view="dashboard">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="nav-btn" data-view="ranking">
+                <i class="fas fa-trophy"></i> Ranking
+            </button>
+            <button class="nav-btn" data-view="grid-largada">
+                <i class="fas fa-flag-checkered"></i> Grid de Largada
+            </button>
+
+            <div class="nav-section-label">Gestão</div>
+            <button class="nav-btn" data-view="corredores-list">
+                <i class="fas fa-users"></i> Corredores
+            </button>
+            <button class="nav-btn" data-view="voltas-list">
+                <i class="fas fa-circle-notch"></i> Voltas
+            </button>
+
+            <div class="nav-section-label">Registrar</div>
+            <button class="nav-btn" data-view="cadastro-corredor">
+                <i class="fas fa-user-plus"></i> Novo Corredor
+            </button>
+            <button class="nav-btn" data-view="cadastro-voltas">
+                <i class="fas fa-stopwatch"></i> Nova Volta
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar" id="user-avatar">A</div>
+                <div>
+                    <div class="sidebar-user-name" id="user-name-display">Administrador</div>
+                    <div class="sidebar-user-role">Admin · F1 Team</div>
+                </div>
+            </div>
+            <button class="btn btn-secondary btn-full" type="button" onclick="voltarAoSite()">
+                <i class="fas fa-arrow-left"></i> Voltar à Landing Page
+            </button>
+        </div>
+    </aside>
+
+    <!-- MOBILE TOPBAR -->
+    <div class="topbar" id="topbar">
+        <div class="topbar-brand">⚔ COWABUNGA</div>
+        <button class="topbar-toggle" id="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="container">
+
+            <!-- ═══ DASHBOARD ═══ -->
+            <div id="dashboard" class="view active">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Dashboard</div>
+                        <div class="page-sub">Visão geral do sistema Cowabunga F1</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="stat-corredores">—</div>
+                        <div class="stat-label">Corredores</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-circle-notch"></i></div>
+                        <div class="stat-value" id="stat-voltas">—</div>
+                        <div class="stat-label">Voltas Registradas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="stat-value" id="stat-equipes">—</div>
+                        <div class="stat-label">Equipes</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+                        <div class="stat-value" id="stat-melhor">—</div>
+                        <div class="stat-label">Melhor Volta (s)</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-medal"></i> Top 5 Corredores</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nome</th>
+                                    <th>Equipe</th>
+                                    <th>Voltas</th>
+                                    <th>Tempo Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-corredores">
+                                <tr><td colspan="5" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ GRID DE LARGADA ═══ -->
+            <div id="grid-largada" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Grid de Largada</div>
+                        <div class="page-sub">Posições ao redor da pista</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-flag-checkered"></i> Circuito de Corrida</div>
+                    <div class="circuit-container">
+                        <div class="circuit-track">
+                            <div class="track-base"></div>
+                            <div class="track-inner"></div>
+                            <div class="track-center-logo">F1 COWABUNGA</div>
+                            <div id="grid-container">
+                                <div class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando grid...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ CORREDORES LIST ═══ -->
+            <div id="corredores-list" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Corredores</div>
+                        <div class="page-sub">Todos os competidores cadastrados</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goView('cadastro-corredor')">
+                        <i class="fas fa-plus"></i> Novo Corredor
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Turma</th>
+                                    <th>Equipe</th>
+                                    <th>Voltas</th>
+                                    <th>Melhor Tempo</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-corredores">
+                                <tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ CORREDOR DETALHES ═══ -->
+            <div id="corredor-detalhes" class="view">
+                <div class="page-header">
+                    <div class="page-title">Detalhes do Corredor</div>
+                    <button class="btn btn-secondary" onclick="goView('corredores-list')">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="stats-grid" id="corredor-stats"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-history"></i> Histórico de Voltas</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>Volta</th><th>Tempo (s)</th><th>Data</th></tr>
+                            </thead>
+                            <tbody id="corredor-voltas">
+                                <tr><td colspan="3" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ VOLTAS LIST ═══ -->
+            <div id="voltas-list" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Voltas</div>
+                        <div class="page-sub">Registro completo de cronometragem</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goView('cadastro-voltas')">
+                        <i class="fas fa-plus"></i> Nova Volta
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Corredor</th>
+                                    <th>Equipe</th>
+                                    <th>Volta</th>
+                                    <th>Tempo (s)</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-voltas">
+                                <tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ RANKING ═══ -->
+            <div id="ranking" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Ranking Geral</div>
+                        <div class="page-sub">Classificação por melhor tempo de volta</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Nome</th>
+                                    <th>Equipe</th>
+                                    <th>Turma</th>
+                                    <th>Voltas</th>
+                                    <th>Melhor Volta (s)</th>
+                                    <th>Tempo Total (s)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-table">
+                                <tr><td colspan="7" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ CADASTRO CORREDOR ═══ -->
+            <div id="cadastro-corredor" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Novo Corredor</div>
+                        <div class="page-sub">Cadastrar um novo competidor</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="goView('corredores-list')">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                </div>
+
+                <div class="form-container">
+                    <div class="card">
+                        <form id="form-corredor" onsubmit="salvarCorredor(event)" novalidate>
+                            <div class="form-group">
+                                <label class="form-label" for="corr-nome">Nome Completo</label>
+                                <input type="text" class="form-input" id="corr-nome" placeholder="Ex: Leonardo Splinter" required minlength="3" maxlength="100">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="corr-turma">Turma</label>
+                                    <input type="text" class="form-input" id="corr-turma" placeholder="Ex: 2A" required maxlength="20">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="corr-equipe">Equipe</label>
+                                    <input type="text" class="form-input" id="corr-equipe" placeholder="Ex: Tartaruga Verde" required maxlength="50">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-full" id="btn-salvar-corredor">
+                                <i class="fas fa-check"></i> Cadastrar Corredor
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ CADASTRO VOLTA ═══ -->
+            <div id="cadastro-voltas" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Nova Volta</div>
+                        <div class="page-sub">Registrar tempo de volta</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="goView('voltas-list')">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                </div>
+
+                <div class="form-container">
+                    <div class="card">
+                        <form id="form-volta" onsubmit="salvarVolta(event)" novalidate>
+                            <div class="form-group">
+                                <label class="form-label" for="volta-corredor">Corredor</label>
+                                <select class="form-select" id="volta-corredor" required>
+                                    <option value="">— Selecione um corredor —</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="volta-numero">Número da Volta</label>
+                                    <input type="number" class="form-input" id="volta-numero" placeholder="1" min="1" max="999" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="volta-tempo">Tempo (segundos)</label>
+                                    <input type="number" class="form-input" id="volta-tempo" placeholder="90.5" step="0.01" min="0.01" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-full" id="btn-salvar-volta">
+                                <i class="fas fa-stopwatch"></i> Registrar Volta
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL EDITAR CORREDOR -->
+    <div class="modal-overlay" id="modal-editar">
+        <div class="modal-box">
+            <div class="modal-title"><i class="fas fa-edit"></i> Editar Corredor</div>
+            <form id="form-editar" onsubmit="confirmarEdicao(event)" novalidate>
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label class="form-label">Nome</label>
+                    <input type="text" class="form-input" id="edit-nome" required minlength="3" maxlength="100">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Turma</label>
+                        <input type="text" class="form-input" id="edit-turma" required maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Equipe</label>
+                        <input type="text" class="form-input" id="edit-equipe" required maxlength="50">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-confirmar-edicao">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-msg"></span>
+    </div>
+
+    <script>
+        /* ════════════════════════════════════════
+           CONFIG & CONSTANTS
+        ════════════════════════════════════════ */
+        const ROUTES = {
+            corredores: '/corredores',
+            voltas:     '/voltas',
+            ranking:    '/corredores/ranking',
+        };
+
+        /* ════════════════════════════════════════
+           SECURITY: SANITIZE OUTPUT
+        ════════════════════════════════════════ */
+        function sanitize(str) {
+            const d = document.createElement('div');
+            d.textContent = String(str ?? '');
+            return d.innerHTML;
+        }
+
+        function safe(str) {
+            return String(str ?? '—');
+        }
+
+        /* ════════════════════════════════════════
+           API HELPER
+        ════════════════════════════════════════ */
+        async function apiFetch(url, opts = {}) {
+            const token = getAuthToken();
+            const defaults = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+            };
+            const res = await fetch(url, { ...defaults, ...opts });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.erro || `HTTP ${res.status}`);
+            return data;
+        }
+
+        /* ════════════════════════════════════════
+           VIEW ROUTER
+        ════════════════════════════════════════ */
+        function goView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId)?.classList.add('active');
+
+            document.querySelectorAll('.nav-btn[data-view]').forEach(b => {
+                b.classList.toggle('active', b.dataset.view === viewId);
+            });
+
+            const loaders = {
+                dashboard:         loadDashboard,
+                'corredores-list': loadCorredores,
+                'voltas-list':     loadVoltas,
+                ranking:           loadRanking,
+                'cadastro-voltas': loadCorredoresSelect,
+                'grid-largada':    loadGridLargada,
+            };
+
+            loaders[viewId]?.();
+        }
+
+        /* ════════════════════════════════════════
+           SIDEBAR TOGGLE (mobile)
+        ════════════════════════════════════════ */
+        document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        document.querySelectorAll('.nav-btn[data-view]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                goView(btn.dataset.view);
+                document.getElementById('sidebar').classList.remove('open');
+            });
+        });
+
+        /* ════════════════════════════════════════
+           TOAST
+        ════════════════════════════════════════ */
+        let _toastTimer;
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon  = toast.querySelector('i');
+            clearTimeout(_toastTimer);
+
+            document.getElementById('toast-msg').textContent = msg;
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            toast.className = `toast show ${type}`;
+
+            _toastTimer = setTimeout(() => {
+                toast.classList.remove('show', type);
+            }, 3200);
+        }
+
+        /* ════════════════════════════════════════
+           MODAL
+        ════════════════════════════════════════ */
+        function openModal() {
+            document.getElementById('modal-editar').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-editar').classList.remove('active');
+            document.getElementById('form-editar').reset();
+        }
+
+        document.getElementById('modal-editar')?.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+
+        /* ════════════════════════════════════════
+           DASHBOARD
+        ════════════════════════════════════════ */
+        async function loadDashboard() {
+            try {
+                const [corredores, voltas] = await Promise.all([
+                    apiFetch(ROUTES.corredores),
+                    apiFetch(ROUTES.voltas),
+                ]);
+
+                document.getElementById('stat-corredores').textContent = corredores.length;
+                document.getElementById('stat-voltas').textContent     = voltas.length;
+
+                const equipes = new Set(corredores.map(c => c.equipe));
+                document.getElementById('stat-equipes').textContent    = equipes.size;
+
+                const tempos = voltas.map(v => parseFloat(v.tempo)).filter(t => !isNaN(t));
+                document.getElementById('stat-melhor').textContent = tempos.length
+                    ? Math.min(...tempos).toFixed(2)
+                    : '—';
+
+                const top5 = corredores
+                    .map(c => {
+                        const cv = voltas.filter(v => Number(v.id_corredor) === Number(c.id));
+                        return { ...c, voltasCount: cv.length, tempoTotal: cv.reduce((s, v) => s + parseFloat(v.tempo || 0), 0) };
+                    })
+                    .sort((a, b) => b.voltasCount - a.voltasCount)
+                    .slice(0, 5);
+
+                const tbody = document.getElementById('top-corredores');
+                if (!top5.length) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="state-empty"><i class="fas fa-users"></i>Nenhum corredor encontrado</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = top5.map((c, i) => `
+                    <tr class="ranking-row">
+                        <td><span class="badge ${['badge-pos1','badge-pos2','badge-pos3'][i] || 'badge-gold'}">#${i + 1}</span></td>
+                        <td><strong>${sanitize(c.nome)}</strong></td>
+                        <td><span class="badge badge-green">${sanitize(c.equipe)}</span></td>
+                        <td>${c.voltasCount}</td>
+                        <td>${c.voltasCount ? c.tempoTotal.toFixed(2) + 's' : '—'}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Dashboard error:', err);
+                showToast('Erro ao carregar dashboard', 'error');
+            }
+        }
+
+        /* ════════════════════════════════════════
+           GRID DE LARGADA
+        ════════════════════════════════════════ */
+        async function loadGridLargada() {
+            const container = document.getElementById('grid-container');
+            container.innerHTML = `<div class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando grid...</div>`;
+
+            try {
+                const corredores = await apiFetch(ROUTES.ranking);
+
+                if (!corredores.length) {
+                    container.innerHTML = `<div class="state-empty"><i class="fas fa-flag-checkered"></i>Nenhum corredor classificado ainda</div>`;
+                    return;
+                }
+
+                const radius = 45; // percentual do container
+                const angleStep = 360 / corredores.length;
+
+                container.innerHTML = corredores.map((c, i) => {
+                    const pos = i + 1;
+                    const posClass = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : 'other';
+                    
+                    // Calcular posição ao redor do círculo
+                    const angle = (i * angleStep - 90) * (Math.PI / 180); // -90 para começar no topo
+                    const x = 50 + radius * Math.cos(angle);
+                    const y = 50 + radius * Math.sin(angle);
+                    
+                    // Calcular rotação visual para apontar para o centro
+                    const rotation = (i * angleStep) + 90;
+
+                    return `
+                        <div class="car-light ${posClass}" 
+                             style="left: ${x}%; top: ${y}%; transform: translate(-50%, -50%) rotate(${rotation}deg);"
+                             title="P${pos} - ${sanitize(c.nome)}">
+                            <div style="transform: rotate(-${rotation}deg);">P${pos}</div>
+                            <div class="car-info">
+                                <span class="car-info-name">${sanitize(c.nome)}</span>
+                                <span class="car-info-time">Equipe: ${sanitize(c.equipe)}</span>
+                                <span class="car-info-time">Melhor volta: ${parseFloat(c.melhor_volta || 0).toFixed(3)}s</span>
+                            </div>
+                        </div>`;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = `<div class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar grid de largada</div>`;
+                console.error('Grid error:', err);
+            }
+        }
+
+        /* ════════════════════════════════════════
+           CORREDORES
+        ════════════════════════════════════════ */
+        async function loadCorredores() {
+            const tbody = document.getElementById('list-corredores');
+            tbody.innerHTML = `<tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+
+            try {
+                const data = await apiFetch(ROUTES.corredores);
+
+                if (!data.length) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="state-empty"><i class="fas fa-users"></i>Nenhum corredor cadastrado</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(c => `
+                    <tr>
+                        <td><strong>${sanitize(c.nome)}</strong></td>
+                        <td><span class="badge badge-gold">${sanitize(c.turma)}</span></td>
+                        <td><span class="badge badge-green">${sanitize(c.equipe)}</span></td>
+                        <td>${safe(c.total_voltas)}</td>
+                        <td>${c.melhor_tempo ? parseFloat(c.melhor_tempo).toFixed(3) + 's' : '—'}</td>
+                        <td>
+                            <div class="action-group">
+                                <button class="btn btn-info" onclick="verDetalhesCorredor(${Number(c.id)})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-secondary" style="font-size:0.68rem;padding:0.5rem 0.9rem" onclick="abrirEdicao(${Number(c.id)}, '${sanitize(c.nome)}', '${sanitize(c.turma)}', '${sanitize(c.equipe)}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="deletarCorredor(${Number(c.id)})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar corredores</td></tr>`;
+                console.error('Corredores error:', err);
+            }
+        }
+
+        async function salvarCorredor(e) {
+            e.preventDefault();
+
+            const nome   = document.getElementById('corr-nome').value.trim();
+            const turma  = document.getElementById('corr-turma').value.trim();
+            const equipe = document.getElementById('corr-equipe').value.trim();
+
+            if (!nome || !turma || !equipe) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-salvar-corredor');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Salvando...';
+
+            try {
+                await apiFetch(ROUTES.corredores, {
+                    method: 'POST',
+                    body: JSON.stringify({ nome, turma, equipe }),
+                });
+
+                showToast('Corredor cadastrado com sucesso!', 'success');
+                document.getElementById('form-corredor').reset();
+                setTimeout(() => goView('corredores-list'), 1200);
+            } catch (err) {
+                showToast(err.message || 'Erro ao cadastrar corredor', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Cadastrar Corredor';
+            }
+        }
+
+        function abrirEdicao(id, nome, turma, equipe) {
+            document.getElementById('edit-id').value    = id;
+            document.getElementById('edit-nome').value  = nome;
+            document.getElementById('edit-turma').value = turma;
+            document.getElementById('edit-equipe').value = equipe;
+            openModal();
+        }
+
+        async function confirmarEdicao(e) {
+            e.preventDefault();
+
+            const id     = Number(document.getElementById('edit-id').value);
+            const nome   = document.getElementById('edit-nome').value.trim();
+            const turma  = document.getElementById('edit-turma').value.trim();
+            const equipe = document.getElementById('edit-equipe').value.trim();
+
+            if (!nome || !turma || !equipe) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+
+            const body = { nome, turma, equipe };
+
+            const btn = document.getElementById('btn-confirmar-edicao');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i>';
+
+            try {
+                await apiFetch(`${ROUTES.corredores}/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(body),
+                });
+
+                showToast('Corredor atualizado!', 'success');
+                closeModal();
+                loadCorredores();
+            } catch (err) {
+                showToast(err.message || 'Erro ao atualizar corredor', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Salvar';
+            }
+        }
+
+        async function deletarCorredor(id) {
+            if (!confirm('Tem certeza que deseja deletar este corredor e todas as suas voltas?')) return;
+
+            try {
+                await apiFetch(`${ROUTES.corredores}/${id}`, { method: 'DELETE' });
+                showToast('Corredor removido', 'success');
+                loadCorredores();
+            } catch (err) {
+                showToast('Erro ao deletar corredor', 'error');
+            }
+        }
+
+        async function verDetalhesCorredor(id) {
+            goView('corredor-detalhes');
+            document.getElementById('corredor-stats').innerHTML = `<div class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</div>`;
+
+            try {
+                const corredor = await apiFetch(`${ROUTES.corredores}/${id}`);
+
+                document.getElementById('corredor-stats').innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-user"></i></div>
+                        <div class="stat-value" style="font-size:1.2rem">${sanitize(corredor.nome)}</div>
+                        <div class="stat-label">Nome</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="stat-value" style="font-size:1.2rem">${sanitize(corredor.equipe)}</div>
+                        <div class="stat-label">Equipe</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-circle-notch"></i></div>
+                        <div class="stat-value">${safe(corredor.total_voltas)}</div>
+                        <div class="stat-label">Total de Voltas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+                        <div class="stat-value">${corredor.melhor_tempo ? parseFloat(corredor.melhor_tempo).toFixed(3) + 's' : '—'}</div>
+                        <div class="stat-label">Melhor Tempo</div>
+                    </div>
+                `;
+
+                const tbody = document.getElementById('corredor-voltas');
+                if (!corredor.voltas?.length) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="state-empty"><i class="fas fa-circle-notch"></i>Sem voltas registradas</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = corredor.voltas.map(v => `
+                    <tr>
+                        <td>#${sanitize(v.numero_volta)}</td>
+                        <td><strong style="color:var(--gold)">${parseFloat(v.tempo).toFixed(3)}s</strong></td>
+                        <td>${new Date(v.data).toLocaleDateString('pt-BR')}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                showToast('Erro ao carregar detalhes', 'error');
+                console.error(err);
+            }
+        }
+
+        /* ════════════════════════════════════════
+           VOLTAS
+        ════════════════════════════════════════ */
+        async function loadVoltas() {
+            const tbody = document.getElementById('list-voltas');
+            tbody.innerHTML = `<tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+
+            try {
+                const data = await apiFetch(ROUTES.voltas);
+
+                if (!data.length) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="state-empty"><i class="fas fa-circle-notch"></i>Nenhuma volta registrada</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(v => `
+                    <tr>
+                        <td><strong>${sanitize(v.corredor_nome || 'Desconhecido')}</strong></td>
+                        <td><span class="badge badge-green">${sanitize(v.equipe || '—')}</span></td>
+                        <td>#${sanitize(v.numero_volta)}</td>
+                        <td><strong style="color:var(--gold)">${parseFloat(v.tempo).toFixed(3)}s</strong></td>
+                        <td style="color:var(--text-muted)">${new Date(v.data).toLocaleDateString('pt-BR')}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deletarVolta(${Number(v.id)})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar voltas</td></tr>`;
+                console.error(err);
+            }
+        }
+
+        async function loadCorredoresSelect() {
+            try {
+                const data = await apiFetch(ROUTES.corredores);
+                const sel  = document.getElementById('volta-corredor');
+                sel.innerHTML = '<option value="">— Selecione um corredor —</option>';
+                data.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value       = c.id;
+                    opt.textContent = `${c.nome} (${c.equipe})`;
+                    sel.appendChild(opt);
+                });
+            } catch (err) {
+                showToast('Erro ao carregar corredores', 'error');
+            }
+        }
+
+        async function salvarVolta(e) {
+            e.preventDefault();
+
+            const id_corredor  = document.getElementById('volta-corredor').value;
+            const numero_volta = document.getElementById('volta-numero').value;
+            const tempo        = document.getElementById('volta-tempo').value;
+
+            if (!id_corredor || !numero_volta || !tempo) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-salvar-volta');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Salvando...';
+
+            try {
+                await apiFetch(ROUTES.voltas, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id_corredor: Number(id_corredor),
+                        numero_volta: Number(numero_volta),
+                        tempo: parseFloat(tempo),
+                    }),
+                });
+
+                showToast('Volta registrada com sucesso!', 'success');
+                document.getElementById('form-volta').reset();
+                setTimeout(() => goView('voltas-list'), 1200);
+            } catch (err) {
+                showToast(err.message || 'Erro ao registrar volta', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-stopwatch"></i> Registrar Volta';
+            }
+        }
+
+        async function deletarVolta(id) {
+            if (!confirm('Tem certeza que deseja deletar esta volta?')) return;
+
+            try {
+                await apiFetch(`${ROUTES.voltas}/${id}`, { method: 'DELETE' });
+                showToast('Volta removida', 'success');
+                loadVoltas();
+            } catch (err) {
+                showToast('Erro ao deletar volta', 'error');
+            }
+        }
+
+        /* ════════════════════════════════════════
+           RANKING
+        ════════════════════════════════════════ */
+        async function loadRanking() {
+            const tbody = document.getElementById('ranking-table');
+            tbody.innerHTML = `<tr><td colspan="7" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+
+            try {
+                const data = await apiFetch(ROUTES.corredores);
+
+                const ranking = data
+                    .filter(c => c.total_voltas > 0)
+                    .sort((a, b) => {
+                        if (a.total_voltas !== b.total_voltas) return b.total_voltas - a.total_voltas;
+                        return (parseFloat(a.melhor_tempo) || Infinity) - (parseFloat(b.melhor_tempo) || Infinity);
+                    });
+
+                if (!ranking.length) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="state-empty"><i class="fas fa-trophy"></i>Nenhum corredor classificado ainda</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = ranking.map((c, i) => {
+                    const pos = i + 1;
+                    const badge = pos === 1 ? 'badge-pos1' : pos === 2 ? 'badge-pos2' : pos === 3 ? 'badge-pos3' : 'badge-gold';
+                    return `
+                        <tr class="ranking-row">
+                            <td><span class="badge ${badge}">#${pos}</span></td>
+                            <td><strong>${sanitize(c.nome)}</strong></td>
+                            <td><span class="badge badge-green">${sanitize(c.equipe)}</span></td>
+                            <td>${sanitize(c.turma)}</td>
+                            <td>${safe(c.total_voltas)}</td>
+                            <td><strong style="color:var(--gold)">${c.melhor_tempo ? parseFloat(c.melhor_tempo).toFixed(3) + 's' : '—'}</strong></td>
+                            <td>${c.tempo_total ? parseFloat(c.tempo_total).toFixed(3) + 's' : '—'}</td>
+                        </tr>`;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar ranking</td></tr>`;
+                console.error(err);
+            }
+        }
+
+        /* ════════════════════════════════════════
+           USER DISPLAY
+        ════════════════════════════════════════ */
+        function loadUserInfo() {
+            try {
+                const raw = sessionStorage.getItem('cowa_user');
+                if (raw) {
+                    const user = JSON.parse(raw);
+                    const name = String(user.nome || 'Admin');
+                    document.getElementById('user-name-display').textContent = name;
+                    document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+                }
+            } catch { /* noop */ }
+        }
+
+        /* ════════════════════════════════════════
+           NAVIGATION
+        ════════════════════════════════════════ */
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                sessionStorage.removeItem('cowa_user');
+                window.location.href = '../index.html';
+            }
+        }
+
+        function voltarAoSite() {
+            window.location.href = '../index.html';
+        }
+
+        /* ════════════════════════════════════════
+           INIT
+        ════════════════════════════════════════ */
+        window.addEventListener('load', () => {
+            loadUserInfo();
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>
