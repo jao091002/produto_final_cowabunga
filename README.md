@@ -10,7 +10,7 @@ O projeto foi construído utilizando as seguintes tecnologias de ponta, dividida
 
 ## Configuração e execução
 
-1. Copie o arquivo `.env.example` para `.env`.
+1. Crie o arquivo ".env" com as informações para o DB e a PORT
 2. Preencha as variáveis de ambiente com os dados do seu banco MySQL e um `JWT_SECRET` seguro.
 3. Crie o banco de dados e as tabelas executando `schema.sql` no MySQL:
    - `mysql -u <usuario> -p < schema.sql`
