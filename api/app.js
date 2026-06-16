@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -9,9 +10,10 @@ app.disable('x-powered-by');
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: '12kb' }));
 
+const defaultWindowMs = 15 * 60 * 1000; // 15 minutes
 const apiLimiter = rateLimit({
-    windowMs: 0 * 60 * 1000,
-    max: 10000,
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || defaultWindowMs,
+    max: parseInt(process.env.RATE_LIMIT_MAX, 10) || 10000,
     message: { erro: 'Muitas requisições deste IP, tente novamente em 15 minutos.' },
     standardHeaders: true,
     legacyHeaders: false,

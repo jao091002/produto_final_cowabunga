@@ -109,7 +109,7 @@ router.post('/login', async (req, res) => {
             user: sanitizeUser(user),
         });
     } catch (error) {
-        console.error('Erro ao fazer login:', error.message);
+        console.error('Erro ao fazer login:', error);
         res.status(500).json({ erro: 'Erro ao fazer login.' });
     }
 });
