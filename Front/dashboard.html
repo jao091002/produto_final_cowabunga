@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self';">
-    <title>Dashboard — Cowabunga F1 | Race With The Shield</title>
+    <title>Dashboard - Cowabunga F1 | Race With The Shield</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,9 +13,9 @@
     <script src="common.js"></script>
 
     <style>
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            VARIABLES & RESET
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         :root {
             --gold:        #D4AF37;
             --gold-light:  #F3E5AB;
@@ -49,11 +49,52 @@
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
+            cursor: none;
         }
 
-        /* ═══════════════════════════════════════
+        button, a, input, select, textarea, label {
+            cursor: none;
+        }
+
+        #custom-cursor, #cursor-dot {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999999;
+        }
+
+        #custom-cursor {
+            width: 28px;
+            height: 28px;
+            background: url('/fotos/cursor_cowabunga-removebg-preview.png') center/cover no-repeat;
+            transform: translate(-10%, -10%);
+            transition: transform 0.12s ease-out;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,.9));
+        }
+
+        #cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform .05s, opacity .2s;
+            box-shadow: 0 0 8px var(--gold);
+            z-index: 999998;
+        }
+
+        body.clicking #custom-cursor { transform: translate(-10%,-10%) scale(.75); }
+        body.clicking #cursor-dot { transform: translate(-50%,-50%) scale(2.5); opacity: .6; }
+
+        @media (hover: none) {
+            #custom-cursor, #cursor-dot { display: none; }
+            body, button, a, input, select, textarea, label { cursor: auto; }
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            SIDEBAR NAV
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .sidebar {
             width: var(--sidebar-w);
             min-height: 100vh;
@@ -77,11 +118,11 @@
         }
 
         .sidebar-logo-icon {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-mid));
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; color: #000; font-weight: 900;
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+            object-position: center;
+            border: 1px solid rgba(212,175,55,0.38);
             box-shadow: 0 0 20px var(--gold-glow);
             flex-shrink: 0;
         }
@@ -206,9 +247,9 @@
         .sidebar-user-name { font-size: 0.8rem; font-weight: 600; color: var(--text-sub); }
         .sidebar-user-role { font-size: 0.65rem; color: var(--text-muted); font-family: 'Orbitron', sans-serif; letter-spacing: 0.08em; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            MOBILE TOPBAR
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .topbar {
             display: none;
             position: fixed;
@@ -230,6 +271,18 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .topbar-brand img {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(212,175,55,0.32);
+            box-shadow: 0 0 14px rgba(212,175,55,0.25);
         }
 
         .topbar-toggle {
@@ -243,9 +296,9 @@
             font-size: 0.9rem;
         }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            MAIN CONTENT
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .main {
             margin-left: var(--sidebar-w);
             flex: 1;
@@ -260,9 +313,9 @@
             max-width: 1200px;
         }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            VIEWS
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .view { display: none; animation: fadeSlide 0.45s var(--ease-out); }
         .view.active { display: block; }
 
@@ -271,9 +324,9 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            PAGE HEADER
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .page-header {
             margin-bottom: 2rem;
             display: flex;
@@ -297,9 +350,9 @@
 
         .page-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            STATS GRID
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -345,9 +398,9 @@
 
         .stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 0.4rem; font-family: 'Orbitron', sans-serif; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            CARDS & TABLES
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .card {
             background: linear-gradient(135deg, rgba(15,15,15,0.9), rgba(20,20,20,0.7));
             border: 1.5px solid var(--border);
@@ -397,9 +450,9 @@
         tr:hover td { background: rgba(212,175,55,0.04); }
         tr:last-child td { border-bottom: none; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            BADGES
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .badge {
             display: inline-flex;
             align-items: center;
@@ -418,9 +471,9 @@
         .badge-pos2  { background: rgba(200,200,200,0.1); color: #aaa; border: 1px solid rgba(200,200,200,0.25); }
         .badge-pos3  { background: rgba(205,127,50,0.15); color: #cd7f32; border: 1px solid rgba(205,127,50,0.3); }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            FORM ELEMENTS
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .form-container { max-width: 680px; }
         .form-group { margin-bottom: 1.25rem; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -460,9 +513,9 @@
         .form-input::placeholder { color: var(--text-muted); }
         .form-select option { background: var(--surface2); }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            BUTTONS
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -497,18 +550,18 @@
         .btn-full { width: 100%; }
         .action-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
-        /* ═══════════════════════════════════════
-           GRID LARGADA — LEGACY (não usado mais)
-        ═══════════════════════════════════════ */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+           GRID LARGADA â€” LEGACY (nÃ£o usado mais)
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .grid-track { position: relative; padding: 1.5rem 0; }
         .grid-pos.p1 { color: var(--gold); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
         .grid-pos.p2 { color: #bbb; }
         .grid-pos.p3 { color: #cd7f32; }
         .grid-pos.other { color: var(--text-muted); }
 
-        /* ═══════════════════════════════════════
-           RACING CIRCUIT — NOVO DESIGN COMPLETO
-        ═══════════════════════════════════════ */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+           RACING CIRCUIT â€” NOVO DESIGN COMPLETO
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
         /* Wrapper externo com perspectiva 3D */
         .circuit-scene {
@@ -532,7 +585,7 @@
             transform: rotateX(12deg) scale(1.015);
         }
 
-        /* SVG da pista — ocupa todo o board */
+        /* SVG da pista â€” ocupa todo o board */
         .circuit-svg-wrap {
             position: absolute;
             inset: 0;
@@ -570,7 +623,7 @@
             flex-shrink: 0;
         }
 
-        /* Tooltip flutuante — aparece no hover do carro */
+        /* Tooltip flutuante â€” aparece no hover do carro */
         .car-tooltip {
             position: fixed;
             z-index: 9990;
@@ -747,7 +800,7 @@
             white-space: nowrap;
         }
 
-        /* Animações dos carros no SVG */
+        /* AnimaÃ§Ãµes dos carros no SVG */
         @keyframes carPulse1 {
             0%,100% { filter: drop-shadow(0 0 6px #D4AF37) drop-shadow(0 0 14px #D4AF37); }
             50%      { filter: drop-shadow(0 0 12px #FFD700) drop-shadow(0 0 28px #FFD700); }
@@ -788,7 +841,7 @@
             100% { opacity: 0; stroke-dashoffset: -60; }
         }
 
-        /* Semáforo piscando no início */
+        /* SemÃ¡foro piscando no inÃ­cio */
         @keyframes semBlink {
             0%,49% { opacity: 1; }
             50%,100% { opacity: 0.15; }
@@ -801,14 +854,14 @@
         .sem-light:nth-child(4) { animation-delay: 0.54s; }
         .sem-light:nth-child(5) { animation-delay: 0.72s; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            RANKING
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .ranking-row td:first-child { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 900; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            LOADING & EMPTY STATES
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .state-loading, .state-empty, .state-error {
             text-align: center;
             padding: 3rem 1rem;
@@ -826,9 +879,9 @@
         .spinner { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            TOAST
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .toast {
             position: fixed;
             bottom: 2rem; right: 2rem;
@@ -854,9 +907,9 @@
         .toast.error { border-color: rgba(192,57,43,0.5); box-shadow: 0 16px 48px rgba(192,57,43,0.15); }
         .toast.error i { color: var(--danger); }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            MODAL
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.8);
@@ -894,9 +947,9 @@
 
         .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
 
-        /* ═══════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            RESPONSIVE
-        ═══════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         @media (max-width: 900px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); box-shadow: 8px 0 40px rgba(0,0,0,0.8); }
@@ -915,11 +968,13 @@
     </style>
 </head>
 <body>
+    <div id="custom-cursor" aria-hidden="true"></div>
+    <div id="cursor-dot" aria-hidden="true"></div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
-            <div class="sidebar-logo-icon">⚔</div>
+            <img class="sidebar-logo-icon" src="/fotos/logo-1.jpg" alt="Logo Cowabunga F1">
             <div>
                 <div class="sidebar-logo-text">COWABUNGA</div>
                 <div class="sidebar-logo-sub">F1 TEAM</div>
@@ -942,6 +997,9 @@
             <button class="nav-btn" data-view="corredores-list">
                 <i class="fas fa-users"></i> Corredores
             </button>
+            <button class="nav-btn" data-view="pistas-list">
+                <i class="fas fa-road"></i> Pistas
+            </button>
             <button class="nav-btn" data-view="voltas-list">
                 <i class="fas fa-circle-notch"></i> Voltas
             </button>
@@ -949,6 +1007,9 @@
             <div class="nav-section-label">Registrar</div>
             <button class="nav-btn" data-view="cadastro-corredor">
                 <i class="fas fa-user-plus"></i> Novo Corredor
+            </button>
+            <button class="nav-btn" data-view="cadastro-pista">
+                <i class="fas fa-map-marked-alt"></i> Nova Pista
             </button>
             <button class="nav-btn" data-view="cadastro-voltas">
                 <i class="fas fa-stopwatch"></i> Nova Volta
@@ -971,7 +1032,7 @@
 
     <!-- MOBILE TOPBAR -->
     <div class="topbar" id="topbar">
-        <div class="topbar-brand">⚔ COWABUNGA</div>
+        <div class="topbar-brand"><img src="/fotos/logo-1.jpg" alt="Logo Cowabunga F1"> COWABUNGA</div>
         <button class="topbar-toggle" id="sidebar-toggle">
             <i class="fas fa-bars"></i>
         </button>
@@ -981,7 +1042,7 @@
     <main class="main">
         <div class="container">
 
-            <!-- ═══ DASHBOARD ═══ -->
+            <!-- â•â•â• DASHBOARD â•â•â• -->
             <div id="dashboard" class="view active">
                 <div class="page-header">
                     <div>
@@ -1034,7 +1095,7 @@
                 </div>
             </div>
 
-            <!-- ═══ GRID DE LARGADA ═══ -->
+            <!-- â•â•â• GRID DE LARGADA â•â•â• -->
             <div id="grid-largada" class="view">
                 <div class="page-header">
                     <div>
@@ -1065,7 +1126,7 @@
 
                         <!-- Ranking lateral -->
                         <div class="circuit-side-ranking" id="circuit-side-ranking">
-                            <div class="side-ranking-title">🏁 Classificação</div>
+                            <div class="side-ranking-title"><i class="fas fa-flag-checkered"></i> Classificação</div>
                             <div id="side-rank-list">
                                 <div class="state-loading" style="padding:1.5rem 0.5rem;font-size:0.65rem;">
                                     <i class="fas fa-spinner spinner" style="font-size:1.2rem;"></i>Aguardando...
@@ -1076,7 +1137,7 @@
                 </div>
             </div>
 
-            <!-- ═══ CORREDORES LIST ═══ -->
+            <!-- â•â•â• CORREDORES LIST â•â•â• -->
             <div id="corredores-list" class="view">
                 <div class="page-header">
                     <div>
@@ -1104,7 +1165,34 @@
                 </div>
             </div>
 
-            <!-- ═══ CORREDOR DETALHES ═══ -->
+            <!-- â•â•â• CORREDOR DETALHES â•â•â• -->
+            <div id="pistas-list" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Pistas</div>
+                        <div class="page-sub">Circuitos cadastrados para cronometragem</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goView('cadastro-pista')">
+                        <i class="fas fa-plus"></i> Nova Pista
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th><th>Local</th><th>Distância</th>
+                                    <th>Voltas</th><th>Melhor Tempo</th><th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-pistas">
+                                <tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div id="corredor-detalhes" class="view">
                 <div class="page-header">
                     <div class="page-title">Detalhes do Corredor</div>
@@ -1120,17 +1208,17 @@
                     <div class="table-wrapper">
                         <table>
                             <thead>
-                                <tr><th>Volta</th><th>Tempo (s)</th><th>Data</th></tr>
+                                <tr><th>Pista</th><th>Volta</th><th>Tempo (s)</th><th>Data</th></tr>
                             </thead>
                             <tbody id="corredor-voltas">
-                                <tr><td colspan="3" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                                <tr><td colspan="4" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- ═══ VOLTAS LIST ═══ -->
+            <!-- â•â•â• VOLTAS LIST â•â•â• -->
             <div id="voltas-list" class="view">
                 <div class="page-header">
                     <div>
@@ -1146,36 +1234,11 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Corredor</th><th>Equipe</th><th>Volta</th>
+                                    <th>Pista</th><th>Corredor</th><th>Equipe</th><th>Volta</th>
                                     <th>Tempo (s)</th><th>Data</th><th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="list-voltas">
-                                <tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══ RANKING ═══ -->
-            <div id="ranking" class="view">
-                <div class="page-header">
-                    <div>
-                        <div class="page-title">Ranking Geral</div>
-                        <div class="page-sub">Classificação por melhor tempo de volta</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Posição</th><th>Nome</th><th>Equipe</th><th>Turma</th>
-                                    <th>Voltas</th><th>Melhor Volta (s)</th><th>Tempo Total (s)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ranking-table">
                                 <tr><td colspan="7" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
                             </tbody>
                         </table>
@@ -1183,7 +1246,90 @@
                 </div>
             </div>
 
-            <!-- ═══ CADASTRO CORREDOR ═══ -->
+            <!-- â•â•â• RANKING â•â•â• -->
+            <div id="ranking" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Ranking</div>
+                        <div class="page-sub">Classificação por menor tempo total somando as voltas</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-globe-americas"></i> Geral - Pilotos</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th><th>Nome</th><th>Equipe</th><th>Turma</th>
+                                    <th>Pistas</th><th>Voltas</th><th>Tempo Total (s)</th><th>Melhor Volta (s)</th><th>PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-geral-pilotos-table">
+                                <tr><td colspan="9" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-layer-group"></i> Geral - Equipes</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th><th>Equipe</th><th>Pilotos</th><th>Pistas</th>
+                                    <th>Voltas</th><th>Tempo Total (s)</th><th>Melhor Volta (s)</th><th>PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-geral-equipes-table">
+                                <tr><td colspan="8" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-road"></i> Por Pista</div>
+                    <div class="form-group">
+                        <label class="form-label" for="ranking-pista">Pista</label>
+                        <select class="form-select" id="ranking-pista" onchange="loadRanking()">
+                            <option value="">Selecione uma pista</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-user-astronaut"></i> Pilotos</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th><th>Nome</th><th>Equipe</th><th>Turma</th>
+                                    <th>Voltas</th><th>Tempo Total (s)</th><th>Melhor Volta (s)</th><th>PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-table">
+                                <tr><td colspan="8" class="state-empty"><i class="fas fa-road"></i>Selecione uma pista</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-users"></i> Equipes</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th><th>Equipe</th><th>Pilotos</th>
+                                    <th>Voltas</th><th>Tempo Total (s)</th><th>Melhor Volta (s)</th><th>PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-equipes-table">
+                                <tr><td colspan="7" class="state-empty"><i class="fas fa-road"></i>Selecione uma pista</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- â•â•â• CADASTRO CORREDOR â•â•â• -->
             <div id="cadastro-corredor" class="view">
                 <div class="page-header">
                     <div>
@@ -1219,7 +1365,46 @@
                 </div>
             </div>
 
-            <!-- ═══ CADASTRO VOLTA ═══ -->
+            <!-- â•â•â• CADASTRO VOLTA â•â•â• -->
+            <div id="cadastro-pista" class="view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Nova Pista</div>
+                        <div class="page-sub">Cadastrar circuito para vincular voltas</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="goView('pistas-list')">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                </div>
+                <div class="form-container">
+                    <div class="card">
+                        <form id="form-pista" onsubmit="salvarPista(event)" novalidate>
+                            <div class="form-group">
+                                <label class="form-label" for="pista-nome">Nome da Pista</label>
+                                <input type="text" class="form-input" id="pista-nome" placeholder="Ex: Sewer Circuit" required minlength="3" maxlength="120">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="pista-localizacao">Local</label>
+                                    <input type="text" class="form-input" id="pista-localizacao" placeholder="Ex: São Paulo" maxlength="120">
+                                </div>
+                                <div class="form-group">
+                                <label class="form-label" for="pista-distancia">Distância (km)</label>
+                                    <input type="number" class="form-input" id="pista-distancia" placeholder="1.250" step="0.001" min="0.001">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="pista-descricao">Descrição</label>
+                                <input type="text" class="form-input" id="pista-descricao" placeholder="Curvas, setores ou observações" maxlength="255">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full" id="btn-salvar-pista">
+                                <i class="fas fa-check"></i> Cadastrar Pista
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <div id="cadastro-voltas" class="view">
                 <div class="page-header">
                     <div>
@@ -1234,9 +1419,15 @@
                     <div class="card">
                         <form id="form-volta" onsubmit="salvarVolta(event)" novalidate>
                             <div class="form-group">
+                                <label class="form-label" for="volta-pista">Pista</label>
+                                <select class="form-select" id="volta-pista" required>
+                                    <option value="">Selecione uma pista</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label class="form-label" for="volta-corredor">Corredor</label>
                                 <select class="form-select" id="volta-corredor" required>
-                                    <option value="">— Selecione um corredor —</option>
+                                    <option value="">Selecione um corredor</option>
                                 </select>
                             </div>
                             <div class="form-row">
@@ -1312,18 +1503,43 @@
     </div>
 
     <script>
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            CONFIG & CONSTANTS
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         const ROUTES = {
             corredores: '/corredores',
+            pistas:     '/pistas',
             voltas:     '/voltas',
             ranking:    '/corredores/ranking',
         };
 
-        /* ════════════════════════════════════════
+        const customCursor = document.getElementById('custom-cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+        let mouseX = 0, mouseY = 0, dotX = 0, dotY = 0;
+
+        if (customCursor && cursorDot && matchMedia('(hover: hover)').matches) {
+            document.addEventListener('mousemove', e => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                customCursor.style.left = `${e.clientX}px`;
+                customCursor.style.top = `${e.clientY}px`;
+            });
+
+            (function animateCursorDot() {
+                dotX += (mouseX - dotX) * 0.15;
+                dotY += (mouseY - dotY) * 0.15;
+                cursorDot.style.left = `${dotX}px`;
+                cursorDot.style.top = `${dotY}px`;
+                requestAnimationFrame(animateCursorDot);
+            })();
+
+            document.addEventListener('mousedown', () => document.body.classList.add('clicking'));
+            document.addEventListener('mouseup', () => document.body.classList.remove('clicking'));
+        };
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            SECURITY: SANITIZE OUTPUT
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         function sanitize(str) {
             const d = document.createElement('div');
             d.textContent = String(str ?? '');
@@ -1332,9 +1548,9 @@
 
         function safe(str) { return String(str ?? '—'); }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            API HELPER
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         async function apiFetch(url, opts = {}) {
             const token = getAuthToken();
             const defaults = {
@@ -1349,9 +1565,9 @@
             return data;
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            VIEW ROUTER
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         function goView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId)?.classList.add('active');
@@ -1361,17 +1577,19 @@
             const loaders = {
                 dashboard:         loadDashboard,
                 'corredores-list': loadCorredores,
+                'pistas-list':     loadPistas,
                 'voltas-list':     loadVoltas,
                 ranking:           loadRanking,
-                'cadastro-voltas': loadCorredoresSelect,
+                'cadastro-pista':  () => {},
+                'cadastro-voltas': loadVoltaFormOptions,
                 'grid-largada':    loadGridLargada,
             };
             loaders[viewId]?.();
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            SIDEBAR TOGGLE (mobile)
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
         });
@@ -1383,9 +1601,9 @@
             });
         });
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            TOAST
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         let _toastTimer;
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
@@ -1397,16 +1615,16 @@
             _toastTimer = setTimeout(() => { toast.classList.remove('show', type); }, 3200);
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            MODAL
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         function openModal()  { document.getElementById('modal-editar').classList.add('active'); }
         function closeModal() { document.getElementById('modal-editar').classList.remove('active'); document.getElementById('form-editar').reset(); }
         document.getElementById('modal-editar')?.addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            DASHBOARD
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         async function loadDashboard() {
             try {
                 const [corredores, voltas] = await Promise.all([
@@ -1452,20 +1670,20 @@
             }
         }
 
-        /* ════════════════════════════════════════
-           GRID DE LARGADA — NOVO ENGINE
-        ════════════════════════════════════════ */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+           GRID DE LARGADA â€” NOVO ENGINE
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
         // Estado global do grid
         const _grid = {
             animFrames: [],   // IDs de requestAnimationFrame ativos
             cars: [],         // dados dos carros + progresso na pista
             trackPath: null,  // SVGPathElement da pista
-            paused: null,     // índice do carro com hover
+            paused: null,     // Ã­ndice do carro com hover
             running: false,
         };
 
-        // Paleta de cores por posição
+        // Paleta de cores por posiÃ§Ã£o
         function carColor(pos) {
             if (pos === 1) return { fill: '#D4AF37', stroke: '#FFD700', glow: 'rgba(212,175,55,0.9)', pulse: 'carPulse1' };
             if (pos === 2) return { fill: '#bbb',    stroke: '#e0e0e0', glow: 'rgba(200,200,200,0.7)', pulse: 'carPulse2' };
@@ -1477,7 +1695,7 @@
         function buildCircuitSVG(numCars) {
             const W = 900, H = 520;
 
-            // Path da pista — formato tipo Monaco/Mônaco com chicanes e curvas variadas
+            // Path da pista â€” formato tipo Monaco/MÃ´naco com chicanes e curvas variadas
             // Definido manualmente para ter aspecto de pista real
             const trackD = `
                 M 120,420
@@ -1602,7 +1820,7 @@
                 C 78,344 75,322 80,400Z
             `.replace(/\s+/g, ' ').trim();
 
-            // Pista complexa com curvas tipo Mônaco
+            // Pista complexa com curvas tipo MÃ´naco
             const OUTER = `M 60,380 C 55,300 55,220 100,165 C 145,110 210,75 290,58 L 440,48 C 540,46 620,55 680,80 C 720,96 760,120 795,148 C 835,180 855,215 858,250 C 862,290 845,325 820,350 C 800,370 775,385 750,394 L 700,400 C 700,400 700,400 700,400 L 680,400 C 700,350 710,300 690,265 C 670,230 640,215 600,210 C 560,206 520,215 490,235 C 460,255 442,285 440,320 C 438,352 450,378 470,395 L 300,395 C 260,390 220,378 192,356 C 165,334 150,302 155,268 C 160,232 178,204 205,185 C 232,166 268,158 308,158 C 348,158 382,168 408,187 C 432,205 446,232 445,262 C 444,292 432,316 410,330 C 390,342 365,346 340,338 C 318,330 302,313 298,292 C 294,272 302,254 318,244 C 334,234 355,232 372,240 C 388,248 396,264 392,280 C 388,295 376,304 361,303 C 348,302 340,294 341,282 C 342,272 350,266 360,268 L 355,275 C 350,274 348,279 351,285 C 354,291 362,294 370,288 C 378,282 379,271 374,262 C 368,252 355,247 341,252 C 327,258 319,273 323,290 C 327,308 342,320 360,321 C 380,322 397,310 401,290 C 406,270 396,248 378,237 C 358,225 332,224 308,235 C 282,248 265,274 267,304 C 270,335 292,360 322,372 L 450,372 C 480,368 504,352 514,326 C 524,300 516,268 496,248 C 474,226 442,217 410,222 C 376,228 349,250 340,282 C 340,282 340,282 340,282 L 300,300 L 300,380 C 200,380 140,368 100,340 C 68,316 62,348 60,380 Z`;
 
             const INNER = `M 180,345 C 160,320 158,285 168,255 C 180,222 204,198 236,184 C 266,170 302,166 340,168 C 378,170 412,182 436,204 C 458,224 466,252 460,282 C 454,310 436,332 408,343 C 382,352 350,351 322,338 C 298,326 282,306 284,284 C 286,264 300,252 318,252 C 335,252 347,264 345,280 C 343,294 332,301 320,298 C 310,295 306,285 311,276 C 315,268 325,266 332,272 L 327,278 C 323,276 319,280 321,286 C 323,292 330,295 337,290 C 344,284 345,274 340,266 C 334,258 322,255 310,261 C 296,268 291,284 296,300 C 302,317 320,326 340,322 C 362,318 378,302 380,280 C 382,258 368,238 348,230 C 326,222 300,228 282,246 C 263,265 260,294 272,320 C 285,348 314,362 346,358 L 500,358 C 532,352 554,332 558,304 C 562,276 546,248 520,234 C 493,220 460,220 432,234 C 406,247 390,270 392,298 C 395,325 414,346 440,352 L 680,352 C 720,348 750,330 762,302 C 774,274 765,240 742,220 C 717,198 682,190 648,196 C 614,202 584,220 566,248 C 548,276 548,310 564,336 C 578,360 604,374 632,376 L 680,376 L 740,370 C 778,360 812,336 830,302 C 848,268 842,226 818,196 C 793,164 752,144 706,134 L 560,128 L 430,130 C 350,134 272,148 212,180 C 152,212 118,264 116,322 C 114,362 124,388 140,406 L 200,415 L 300,415 C 240,404 195,380 180,345 Z`;
@@ -1610,8 +1828,8 @@
             return { outer: OUTER, inner: INNER };
         }
 
-        // Caminho de animação dos carros — percurso ao longo da pista
-        // Usamos um único path fechado para todos os carros percorrerem
+        // Caminho de animaÃ§Ã£o dos carros â€” percurso ao longo da pista
+        // Usamos um Ãºnico path fechado para todos os carros percorrerem
         function getTrackAnimPath() {
             // Path central da pista (entre outer e inner)
             return `M 120,362 C 110,340 108,310 118,282 C 130,252 152,228 182,210 C 214,192 252,182 295,178 C 338,174 382,178 420,192 C 456,206 484,230 498,262 C 510,292 506,326 488,350 C 470,374 440,387 408,388 L 290,388 C 248,385 215,370 194,346 C 174,323 168,292 176,262 C 185,230 208,208 240,198 C 270,188 306,190 336,206 C 364,221 380,248 378,278 C 376,306 360,328 336,337 C 314,344 288,339 272,322 C 258,306 256,282 268,265 C 280,248 300,242 318,250 C 334,258 340,276 332,290 C 325,303 311,308 298,302 C 288,296 286,285 294,277 C 301,270 313,270 320,278 L 315,284 C 311,281 306,284 308,290 C 310,296 318,298 324,293 C 330,287 329,278 322,273 C 314,267 302,269 296,278 C 289,288 292,303 304,312 C 317,321 335,320 348,308 C 361,296 362,276 350,260 C 337,243 314,238 293,248 C 270,259 260,285 268,310 C 277,337 304,352 335,348 L 490,348 C 524,342 549,322 554,294 C 558,267 543,240 517,226 C 489,211 454,211 426,227 C 400,242 388,268 394,296 C 401,324 424,342 452,344 L 680,344 C 714,338 742,318 753,290 C 762,263 752,232 730,214 C 706,194 672,188 640,196 C 608,204 582,224 568,252 C 555,280 558,312 574,336 C 590,360 618,374 648,374 L 710,368 C 746,358 778,334 792,300 C 806,266 798,226 773,200 C 746,172 706,157 662,148 L 540,142 L 410,144 C 326,148 248,162 190,196 C 130,232 98,290 100,350 C 101,378 110,398 126,412 L 200,420 L 660,420 C 706,416 744,402 770,376 C 796,350 806,314 800,278 C 793,242 770,215 740,202 C 708,188 668,190 638,208 C 608,225 592,256 596,288 C 601,320 622,344 650,350 L 680,352 L 700,352 C 686,304 698,254 720,238 C 740,224 768,226 788,244 C 810,264 816,298 806,326 C 796,352 770,368 740,368 L 686,368 L 640,370 C 608,368 580,352 566,328 C 552,304 554,274 570,252 C 586,230 614,218 644,220 C 674,222 699,238 710,264 C 720,289 714,318 697,334 C 680,350 655,354 632,344 L 630,340 C 626,296 636,256 660,240 C 684,224 714,228 734,248 C 754,268 756,302 742,326 L 738,330 L 690,368 L 648,374 C 614,374 582,356 568,328 C 554,300 560,264 580,244 C 600,224 632,218 660,230 L 662,232 L 710,180 C 680,165 640,157 596,158 L 450,156 C 378,158 306,170 250,198 C 193,227 158,278 152,336 C 148,366 154,390 166,408 L 192,420 L 120,420 C 99,406 88,386 84,360 C 80,334 86,308 100,287 C 115,265 138,250 165,242 C 192,234 222,236 248,250 L 120,362 Z`;
@@ -1680,7 +1898,7 @@
             ].join(' ');
         }
 
-        // ─── Engine de animação dos carros ───────────────────────────────────
+        // â”€â”€â”€ Engine de animaÃ§Ã£o dos carros â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         let _gridRAF = null;
         let _gridCars = [];
         let _gridTrackEl = null;
@@ -1780,7 +1998,7 @@
     _gridRAF = requestAnimationFrame(loop);
 }
 
-        // ─── Tooltip do carro ────────────────────────────────────────────────
+        // â”€â”€â”€ Tooltip do carro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         const _tooltip = document.getElementById('car-tooltip');
 
         function showCarTooltip(e, car) {
@@ -1810,7 +2028,7 @@
             if (_tooltip.classList.contains('visible')) moveTooltip(e);
         });
 
-        // ─── Carrega o Grid de Largada ────────────────────────────────────────
+        // â”€â”€â”€ Carrega o Grid de Largada â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         async function loadGridLargada() {
             stopGridAnimation();
             _gridCars = [];
@@ -1839,14 +2057,14 @@
                     ...c,
                     pos:      i + 1,
                     color:    colors[i % colors.length],
-                    progress: i / corredores.length, // posição inicial espaçada
+                    progress: i / corredores.length, // posiÃ§Ã£o inicial espaÃ§ada
                 }));
 
-                // ─── Constrói o SVG ─────────────────────────────────────────
+                // â”€â”€â”€ ConstrÃ³i o SVG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 const W = 900, H = 500;
 
                 // Path central da pista (onde os carros andam)
-                // Pista estilo F1 com curvas características
+                // Pista estilo F1 com curvas caracterÃ­sticas
                 const centerPath = `
                     M 130,390
                     C 90,390 70,370 65,340
@@ -1999,7 +2217,7 @@
                     L 130,390
                 `;
 
-                // Simplifica: usa uma elipse suave mas com indentação de chicane
+                // Simplifica: usa uma elipse suave mas com indentaÃ§Ã£o de chicane
                 // para parecer uma pista real F1
                 const trackCenter = `
                     M 130,395
@@ -2091,14 +2309,14 @@
                     L 130,395
                 `;
 
-                // ─── SVG FINAL ───────────────────────────────────────────────
-                // Usaremos um path mais elegante e limpo — pista F1 com chicane na direita
+                // â”€â”€â”€ SVG FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // Usaremos um path mais elegante e limpo â€” pista F1 com chicane na direita
                 // e curva lenta na esquerda
                 const outerPath = `M 55,385 C 48,315 50,240 90,182 C 132,122 202,88 282,68 L 430,52 C 508,50 576,58 630,82 C 672,100 706,128 728,162 C 752,198 760,240 754,280 C 748,320 728,354 700,372 L 640,384 L 640,384 C 656,316 650,252 614,216 C 576,178 522,170 474,188 C 426,206 400,252 412,302 C 424,350 466,376 510,364 C 552,352 570,306 552,264 C 534,222 490,206 450,224 C 410,242 396,288 416,326 C 436,364 480,374 516,352 C 550,330 556,286 532,258 C 508,230 468,230 445,256 C 422,282 428,322 456,338 C 484,354 518,340 528,312 C 537,284 518,256 490,252 C 462,248 440,270 444,298 C 448,326 474,338 498,324 C 521,310 524,282 505,265 C 486,248 460,255 450,275 C 440,295 452,319 476,324 C 499,329 520,312 516,289 C 512,266 490,256 469,267 C 449,278 447,302 465,313 C 482,323 502,312 503,293 C 503,275 485,263 467,271 C 450,279 447,300 462,311 C 477,322 497,313 499,296 C 500,279 484,267 468,274 C 452,282 449,302 464,313 L 478,310 C 466,302 465,283 480,276 C 495,269 512,280 511,296 C 510,312 494,322 479,313 C 464,304 462,285 478,277 C 494,269 514,280 514,298 C 514,315 497,326 481,317 C 465,308 462,289 476,279 C 490,268 510,277 512,295 C 513,313 498,325 482,319 C 466,313 460,294 472,281 C 484,268 504,273 508,290 C 512,307 499,323 482,321 C 466,318 456,300 466,285 C 476,270 496,270 505,286 C 514,302 504,321 487,322 C 470,322 457,306 465,291 C 473,276 492,274 502,287 C 512,300 506,318 491,320 C 476,321 464,307 471,293 C 478,279 495,277 504,290 L 510,298 C 508,280 488,268 470,276 C 452,284 448,306 463,319 C 478,332 500,325 506,307 C 512,289 500,270 481,269 C 462,268 448,284 454,303 C 460,322 481,330 499,320 C 517,310 520,288 506,272 C 491,255 468,256 455,273 C 441,290 448,316 468,325 C 488,334 511,321 514,300 C 517,278 500,259 478,260 C 456,260 440,280 446,302 C 452,324 477,332 498,318 C 518,304 519,278 503,262 C 486,245 460,249 448,268 C 436,287 445,314 468,323 C 491,332 516,318 518,294 C 520,270 500,251 476,254 C 452,258 437,282 447,306 C 457,330 485,338 508,322 L 540,308 C 574,290 594,258 588,222 C 582,184 552,160 514,158 L 380,152 C 320,155 264,164 214,186 C 162,209 120,248 98,298 C 78,342 74,390 82,428 L 100,442 L 200,448 L 660,448 C 706,444 745,426 770,396 C 794,365 800,325 790,290 C 779,254 754,230 722,218 C 688,206 650,212 620,232 C 590,252 574,286 580,322 C 587,357 612,380 642,382 L 712,374 C 752,360 780,326 782,288 C 784,250 760,218 726,208 C 690,198 652,216 636,250 C 620,284 634,326 666,340 C 698,354 735,336 744,302 C 753,268 730,234 696,228 C 660,222 630,248 632,284 C 634,320 666,340 700,328 C 733,316 744,280 726,254 C 707,228 670,226 650,250 C 630,274 640,312 668,324 C 696,336 726,320 730,291 C 733,262 712,238 682,240 C 652,242 636,268 646,296 C 656,324 686,334 710,316 C 733,298 732,266 708,250 C 684,234 654,244 646,272 C 638,300 658,328 688,330 C 718,332 740,306 732,278 C 724,250 694,238 668,254 C 643,270 640,304 662,322 L 644,382 C 600,388 548,372 520,338 C 492,304 494,258 518,228 C 543,198 584,190 620,204 C 655,217 672,254 660,290 C 648,326 610,342 576,326 C 542,310 530,272 548,240 C 566,208 606,200 636,220 L 660,448 L 55,448 L 55,385 Z`;
 
                 const innerPath = `M 162,382 C 140,358 130,324 136,290 C 143,254 164,226 196,210 C 230,193 270,189 308,196 C 348,204 381,224 398,254 C 413,282 406,316 385,336 C 362,357 328,360 300,346 C 272,332 259,300 271,270 C 283,240 315,228 342,242 C 368,256 374,289 355,311 C 337,332 304,331 288,309 C 273,288 282,258 308,251 C 333,244 355,264 348,290 C 342,315 316,325 294,311 C 272,297 270,268 292,254 C 314,240 340,254 340,278 C 340,302 316,316 296,305 C 277,293 277,269 298,259 C 319,249 342,264 338,286 C 334,308 310,317 292,305 C 274,292 276,268 298,259 L 316,254 C 294,260 285,284 298,304 C 311,323 338,322 352,300 C 365,279 355,250 330,244 C 305,238 283,258 286,284 C 290,309 315,321 338,308 C 361,295 364,266 344,250 C 324,234 298,244 292,268 C 287,292 305,314 330,314 C 355,314 372,292 364,268 C 356,244 328,237 308,254 C 288,271 290,302 314,315 C 337,328 364,314 366,289 C 368,264 346,244 320,250 C 295,256 282,284 296,308 C 310,332 340,335 358,313 C 376,291 370,260 346,250 C 322,240 298,258 300,284 C 302,310 328,324 352,312 C 376,300 380,272 360,256 C 340,240 312,250 308,276 C 304,302 326,320 352,312 L 386,296 C 416,278 428,244 414,214 C 400,182 364,170 330,184 C 296,198 282,236 298,268 L 290,272 C 270,238 285,196 320,183 C 356,170 396,186 411,220 C 426,254 410,292 376,308 L 358,316 C 330,326 296,318 278,295 C 260,272 263,238 286,220 C 310,202 344,206 360,228 C 376,250 368,282 344,292 C 320,302 294,286 294,262 C 294,238 318,224 340,234 C 362,244 368,270 350,286 C 332,302 306,294 302,272 C 298,250 318,234 340,240 C 361,246 368,270 352,285 C 336,300 312,292 310,272 C 308,252 328,238 348,246 C 368,254 372,278 355,292 C 338,306 314,298 310,277 C 306,256 323,240 342,247 C 362,254 368,278 352,292 L 368,292 C 390,272 384,236 354,226 C 324,216 296,240 300,272 C 304,303 336,316 362,300 C 388,284 388,248 362,236 C 336,224 308,246 313,278 C 318,310 352,322 376,304 C 400,286 396,250 368,240 C 340,230 314,254 320,286 C 326,318 362,328 386,308 C 410,288 403,252 374,244 C 344,236 318,262 328,294 C 338,326 374,332 396,308 L 404,298 C 426,270 418,232 384,222 C 350,212 319,238 326,274 C 333,309 368,322 395,300 C 422,278 416,238 383,228 L 364,226 L 426,226 C 464,230 493,260 490,298 C 487,335 454,356 418,348 L 388,340 C 356,328 338,300 348,268 C 358,236 394,222 424,237 C 454,252 462,290 440,316 C 418,342 380,342 358,318 C 337,294 342,256 370,244 C 397,232 425,250 428,278 C 431,306 408,328 380,322 C 352,316 339,289 354,265 C 369,241 400,239 416,262 C 432,284 422,316 395,322 C 368,328 345,306 350,280 C 355,254 382,244 402,262 C 422,280 416,310 390,318 C 364,326 340,306 346,280 C 352,254 380,246 398,266 C 416,286 406,318 379,322 C 352,326 332,304 340,278 C 348,252 378,245 398,264 L 402,268 C 383,248 353,251 343,277 C 333,303 354,330 382,329 C 410,328 428,301 419,274 C 410,247 380,238 357,257 C 334,276 337,308 363,322 C 388,335 418,321 423,295 C 427,268 405,245 378,251 C 350,257 338,287 352,312 C 366,337 400,340 421,316 C 441,292 432,258 404,248 C 376,238 350,262 358,292 C 366,321 400,330 425,308 C 449,286 443,250 414,243 C 384,236 358,261 366,292 C 374,322 408,330 430,307 L 438,297 C 460,270 452,232 422,222 C 391,212 360,236 360,268 C 360,300 390,318 418,304 C 445,290 450,256 425,240 C 400,224 368,242 368,272 C 368,302 400,316 424,300 C 448,284 447,248 420,236 C 393,224 366,246 371,278 C 376,309 409,320 434,300 C 459,280 452,244 422,236 C 392,228 366,254 376,285 C 386,316 420,323 443,299 C 466,275 456,238 424,232 C 392,226 365,254 377,287 C 389,319 424,325 446,299 L 448,295 C 470,266 459,226 426,220 C 393,214 364,240 370,275 C 377,309 414,324 444,305 C 474,285 474,246 443,234 C 412,221 381,246 388,280 C 395,314 432,326 458,303 C 484,280 479,240 447,230 C 415,220 386,247 397,282 C 407,317 446,326 470,300 C 494,274 484,234 451,226 C 418,218 391,248 404,283 C 417,317 455,323 476,296 C 497,268 484,229 450,224 C 416,219 390,252 406,287 C 422,321 462,324 480,294 C 498,264 481,224 447,221 C 412,218 388,254 406,289 L 404,292 L 402,410 L 162,410 L 162,382 Z`;
 
-                // Path LIMPO da pista – traçado manual inspirado em Monaco + Interlagos
+                // Path LIMPO da pista â€“ traÃ§ado manual inspirado em Monaco + Interlagos
                 // Viewbox: 0 0 860 480
 
                 const svgContent = `
@@ -2125,7 +2343,7 @@
     <filter id="carGlow1"><feGaussianBlur stdDeviation="4" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
     <filter id="carGlowN"><feGaussianBlur stdDeviation="2.5" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
 
-    <!-- Clip da pista (área entre outer e inner) -->
+    <!-- Clip da pista (Ã¡rea entre outer e inner) -->
     <clipPath id="trackClip">
       <path d="M 60,420 L 60,190 Q 60,100 145,60 L 310,30 Q 390,18 450,20 L 530,22 Q 610,26 660,58 L 720,95 Q 758,128 775,162 Q 800,205 800,245 L 800,270 Q 800,300 785,320 L 765,340 Q 742,360 712,368 L 712,380 Q 738,374 762,354 Q 796,322 800,278 Q 804,234 784,200 Q 762,162 726,136 Q 690,110 644,92 L 570,68 Q 510,52 440,50 L 320,48 Q 230,50 158,76 Q 88,104 56,158 Q 32,200 32,260 L 32,420 L 60,420 Z M 150,390 L 680,390 Q 720,390 744,370 Q 768,348 768,310 Q 768,272 743,252 Q 718,232 680,230 Q 642,228 616,248 Q 590,268 587,302 Q 584,336 606,356 Q 628,376 660,376 L 680,374 Q 712,368 726,340 Q 740,312 726,284 Q 711,254 680,248 Q 648,242 626,264 Q 604,286 607,318 Q 611,350 640,362 Q 668,374 694,356 Q 720,338 715,308 Q 710,278 683,270 Q 655,262 637,282 Q 619,302 626,332 Q 633,362 660,368 L 662,370 L 660,374 Q 636,374 618,354 Q 600,334 602,304 Q 604,274 626,256 Q 648,238 677,244 Q 706,250 720,278 Q 734,306 720,334 Q 706,360 677,368 L 658,372 Q 628,370 610,350 Q 590,328 593,296 Q 596,262 622,244 Q 648,226 680,232 Q 712,238 732,264 Q 752,290 748,326 Q 744,360 716,378 Q 688,396 652,390 L 150,390 Z"/>
     </clipPath>
@@ -2136,17 +2354,17 @@
     </marker>
   </defs>
 
-  <!-- ── FUNDO AMBIENTE ── -->
+  <!-- â”€â”€ FUNDO AMBIENTE â”€â”€ -->
   <rect width="860" height="480" fill="#050505"/>
 
-  <!-- Gradiente atmosférico de pista -->
+  <!-- Gradiente atmosfÃ©rico de pista -->
   <ellipse cx="430" cy="240" rx="380" ry="200"
            fill="none"
            stroke="rgba(212,175,55,0.06)"
            stroke-width="80"
            filter="url(#shadow3d)"/>
 
-  <!-- ── PISTA — OUTER (asfalto cinza-escuro) ── -->
+  <!-- â”€â”€ PISTA â€” OUTER (asfalto cinza-escuro) â”€â”€ -->
   <!-- Pista gerada com path custom tipo Monaco/F1 -->
   <!-- Outer boundary -->
   <path id="track-outer"
@@ -2249,7 +2467,7 @@
         stroke="rgba(100,100,100,0.4)"
         stroke-width="1.5"/>
 
-  <!-- ── PISTA INTERIOR (remove o centro) ── -->
+  <!-- â”€â”€ PISTA INTERIOR (remove o centro) â”€â”€ -->
   <path id="track-inner-cut"
         d="M 148,398
            C 122,380 108,350 110,315
@@ -2335,7 +2553,7 @@
            Z"
         fill="#080808"/>
 
-  <!-- ── LINHAS DE BORDA DA PISTA (dourado) ── -->
+  <!-- â”€â”€ LINHAS DE BORDA DA PISTA (dourado) â”€â”€ -->
   <!-- Linha OUTER glow -->
   <path d="M 60,408
            C 44,370 40,320 46,270
@@ -2416,7 +2634,7 @@
         stroke="rgba(212,175,55,0.2)"
         stroke-width="1"/>
 
-  <!-- ── MARCAÇÕES DA PISTA ── -->
+  <!-- â”€â”€ MARCAÃ‡Ã•ES DA PISTA â”€â”€ -->
   <!-- Linha central tracejada (branca) -->
   <path d="M 90,395 L 600,395"
         fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"
@@ -2438,7 +2656,7 @@
           letter-spacing="1">START</text>
   </g>
 
-  <!-- ── SEMÁFORO ── -->
+  <!-- â”€â”€ SEMÃFORO â”€â”€ -->
   <g id="semaforo" transform="translate(170, 365)">
     <rect x="-4" y="-28" width="42" height="22" rx="4"
           fill="rgba(10,10,10,0.9)" stroke="rgba(212,175,55,0.4)" stroke-width="1"/>
@@ -2449,14 +2667,14 @@
     <circle class="sem-light" cx="26" cy="-17" r="5" fill="#cc0000" filter="url(#carGlowN)" style="animation-delay:0.6s"/>
   </g>
 
-  <!-- ── BOXES / PIT LANE ── -->
+  <!-- â”€â”€ BOXES / PIT LANE â”€â”€ -->
   <rect x="82" y="408" width="80" height="18" rx="3"
         fill="rgba(212,175,55,0.08)" stroke="rgba(212,175,55,0.3)" stroke-width="1"/>
   <text x="122" y="420" text-anchor="middle"
         font-family="Orbitron,sans-serif" font-size="6.5" fill="rgba(212,175,55,0.7)"
         letter-spacing="1.5">PIT LANE</text>
 
-  <!-- ── NOME DO CIRCUITO ── -->
+  <!-- â”€â”€ NOME DO CIRCUITO â”€â”€ -->
   <text x="430" y="244" text-anchor="middle"
         font-family="Orbitron,sans-serif" font-size="18" font-weight="900"
         fill="rgba(212,175,55,0.12)" letter-spacing="4">COWABUNGA</text>
@@ -2464,22 +2682,22 @@
         font-family="Orbitron,sans-serif" font-size="9"
         fill="rgba(212,175,55,0.08)" letter-spacing="8">GRAND PRIX</text>
 
-  <!-- ── PATH INVISÍVEL DOS CARROS (onde percorrem) ── -->
+  <!-- â”€â”€ PATH INVISÃVEL DOS CARROS (onde percorrem) â”€â”€ -->
   <path id="anim-path"
         d="${getCleanTrackAnimPath()}"
         fill="none" stroke="transparent" stroke-width="24"
         visibility="hidden"/>
 
-  <!-- ── CONTAINER DOS RASTROS ── -->
+  <!-- â”€â”€ CONTAINER DOS RASTROS â”€â”€ -->
   <g id="trails-layer"></g>
 
-  <!-- ── CONTAINER DOS CARROS ── -->
+  <!-- â”€â”€ CONTAINER DOS CARROS â”€â”€ -->
   <g id="cars-layer"></g>
 </svg>`;
 
                 svgWrap.innerHTML = svgContent;
 
-                // Pega o path de animação
+                // Pega o path de animaÃ§Ã£o
                 _gridTrackEl = svgWrap.querySelector('#anim-path');
                 _gridTrackLen = _gridTrackEl ? _gridTrackEl.getTotalLength() : 0;
 
@@ -2529,7 +2747,7 @@
                     body.style.filter = `drop-shadow(0 0 ${isTop3 ? '6' : '4'}px ${c.fill})`;
                     body.style.animation = `${c.pulse} ${1.8 + idx * 0.15}s ease-in-out infinite`;
 
-                    // Número da posição
+                    // NÃºmero da posiÃ§Ã£o
                     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     label.setAttribute('x', '0');
                     label.setAttribute('y', '0.4');
@@ -2547,7 +2765,7 @@
                     g.appendChild(label);
                     carsLayer.appendChild(g);
 
-                    // ─ Eventos hover ─
+                    // â”€ Eventos hover â”€
             g.addEventListener('mouseenter', (e) => {
 
     _gridPausedIdx = idx;
@@ -2581,7 +2799,7 @@ g.addEventListener('mouseleave', () => {
     }
 });
 
-                    // Posição inicial
+                    // PosiÃ§Ã£o inicial
                     if (_gridTrackEl && _gridTrackLen > 0) {
                         const d  = car.progress * _gridTrackLen;
                         const pt = _gridTrackEl.getPointAtLength(d);
@@ -2589,7 +2807,7 @@ g.addEventListener('mouseleave', () => {
                     }
                 });
 
-                // ─── Ranking lateral ──────────────────────────────────────
+                // â”€â”€â”€ Ranking lateral â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 const posClasses = ['r1','r2','r3'];
                 sideList.innerHTML = _gridCars.map((car, idx) => {
                     const pClass = posClasses[idx] || 'rn';
@@ -2605,7 +2823,7 @@ g.addEventListener('mouseleave', () => {
                         </div>`;
                 }).join('');
 
-                // ─── Legenda ──────────────────────────────────────────────
+                // â”€â”€â”€ Legenda â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 const legendItems = [
                     { color: '#D4AF37', label: 'P1 — Líder' },
                     { color: '#C0C0C0', label: 'P2' },
@@ -2623,7 +2841,7 @@ g.addEventListener('mouseleave', () => {
                         Hover para detalhes
                     </div>`;
 
-                // ─── Inicia a animação ─────────────────────────────────────
+                // â”€â”€â”€ Inicia a animaÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 startGridAnimation();
 
             } catch (err) {
@@ -2633,16 +2851,16 @@ g.addEventListener('mouseleave', () => {
             }
         }
 
-        // Para animação ao sair da view
+        // Para animaÃ§Ã£o ao sair da view
         document.querySelectorAll('.nav-btn[data-view]').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (btn.dataset.view !== 'grid-largada') stopGridAnimation();
             });
         });
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            CORREDORES
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         async function loadCorredores() {
             const tbody = document.getElementById('list-corredores');
             tbody.innerHTML = `<tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
@@ -2774,11 +2992,12 @@ g.addEventListener('mouseleave', () => {
                 `;
                 const tbody = document.getElementById('corredor-voltas');
                 if (!corredor.voltas?.length) {
-                    tbody.innerHTML = `<tr><td colspan="3" class="state-empty"><i class="fas fa-circle-notch"></i>Sem voltas registradas</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4" class="state-empty"><i class="fas fa-circle-notch"></i>Sem voltas registradas</td></tr>`;
                     return;
                 }
                 tbody.innerHTML = corredor.voltas.map(v => `
                     <tr>
+                        <td>${sanitize(v.pista_nome || '---')}</td>
                         <td>#${sanitize(v.numero_volta)}</td>
                         <td><strong style="color:var(--gold)">${parseFloat(v.tempo).toFixed(3)}s</strong></td>
                         <td>${new Date(v.data).toLocaleDateString('pt-BR')}</td>
@@ -2790,20 +3009,123 @@ g.addEventListener('mouseleave', () => {
             }
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            VOLTAS
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        async function loadPistas() {
+            const tbody = document.getElementById('list-pistas');
+            tbody.innerHTML = `<tr><td colspan="7" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+            try {
+                const data = await apiFetch(ROUTES.pistas);
+                if (!data.length) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="state-empty"><i class="fas fa-road"></i>Nenhuma pista cadastrada</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = data.map(p => `
+                    <tr>
+                        <td><strong>${sanitize(p.nome)}</strong></td>
+                        <td>${sanitize(p.localizacao || '---')}</td>
+                        <td>${p.distancia_km ? parseFloat(p.distancia_km).toFixed(3) + ' km' : '---'}</td>
+                        <td>${safe(p.total_voltas)}</td>
+                        <td>${p.melhor_tempo ? parseFloat(p.melhor_tempo).toFixed(3) + 's' : '---'}</td>
+                        <td>
+                            <div class="action-group">
+                                <button class="btn btn-info" onclick="goView('ranking'); setRankingPista(${Number(p.id)})">
+                                    <i class="fas fa-trophy"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="deletarPista(${Number(p.id)})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar pistas</td></tr>`;
+                console.error('Pistas error:', err);
+            }
+        }
+
+        async function salvarPista(e) {
+            e.preventDefault();
+            const nome = document.getElementById('pista-nome').value.trim();
+            const localizacao = document.getElementById('pista-localizacao').value.trim();
+            const distancia_km = document.getElementById('pista-distancia').value;
+            const descricao = document.getElementById('pista-descricao').value.trim();
+            if (!nome) { showToast('Informe o nome da pista', 'error'); return; }
+            const btn = document.getElementById('btn-salvar-pista');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Salvando...';
+            try {
+                await apiFetch(ROUTES.pistas, {
+                    method: 'POST',
+                    body: JSON.stringify({ nome, localizacao, distancia_km: distancia_km ? Number(distancia_km) : null, descricao }),
+                });
+                showToast('Pista cadastrada com sucesso!', 'success');
+                document.getElementById('form-pista').reset();
+                setTimeout(() => goView('pistas-list'), 1000);
+            } catch (err) {
+                showToast(err.message || 'Erro ao cadastrar pista', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Cadastrar Pista';
+            }
+        }
+
+        async function deletarPista(id) {
+            if (!confirm('Tem certeza que deseja deletar esta pista e todas as voltas vinculadas?')) return;
+            try {
+                await apiFetch(`${ROUTES.pistas}/${id}`, { method: 'DELETE' });
+                showToast('Pista removida', 'success');
+                loadPistas();
+            } catch (err) {
+                showToast('Erro ao deletar pista', 'error');
+            }
+        }
+
+        async function loadPistasSelect(selectId = 'volta-pista') {
+            const sel = document.getElementById(selectId);
+            if (!sel) return [];
+            try {
+                const data = await apiFetch(ROUTES.pistas);
+                const current = sel.value;
+                sel.innerHTML = '<option value="">Selecione uma pista</option>';
+                data.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.localizacao ? `${p.nome} (${p.localizacao})` : p.nome;
+                    sel.appendChild(opt);
+                });
+                if (current) sel.value = current;
+                return data;
+            } catch (err) {
+                showToast('Erro ao carregar pistas', 'error');
+                return [];
+            }
+        }
+
+        async function loadVoltaFormOptions() {
+            await Promise.all([loadCorredoresSelect(), loadPistasSelect('volta-pista')]);
+        }
+
+        async function setRankingPista(id) {
+            await loadPistasSelect('ranking-pista');
+            document.getElementById('ranking-pista').value = String(id);
+            loadRanking();
+        }
+
         async function loadVoltas() {
             const tbody = document.getElementById('list-voltas');
             tbody.innerHTML = `<tr><td colspan="6" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
             try {
                 const data = await apiFetch(ROUTES.voltas);
                 if (!data.length) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="state-empty"><i class="fas fa-circle-notch"></i>Nenhuma volta registrada</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" class="state-empty"><i class="fas fa-circle-notch"></i>Nenhuma volta registrada</td></tr>`;
                     return;
                 }
                 tbody.innerHTML = data.map(v => `
                     <tr>
+                        <td><span class="badge badge-gold">${sanitize(v.pista_nome || '---')}</span></td>
                         <td><strong>${sanitize(v.corredor_nome || 'Desconhecido')}</strong></td>
                         <td><span class="badge badge-green">${sanitize(v.equipe || '—')}</span></td>
                         <td>#${sanitize(v.numero_volta)}</td>
@@ -2813,7 +3135,7 @@ g.addEventListener('mouseleave', () => {
                     </tr>
                 `).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="6" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar voltas</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar voltas</td></tr>`;
                 console.error(err);
             }
         }
@@ -2822,7 +3144,7 @@ g.addEventListener('mouseleave', () => {
             try {
                 const data = await apiFetch(ROUTES.corredores);
                 const sel  = document.getElementById('volta-corredor');
-                sel.innerHTML = '<option value="">— Selecione um corredor —</option>';
+                sel.innerHTML = '<option value="">Selecione um corredor</option>';
                 data.forEach(c => {
                     const opt = document.createElement('option');
                     opt.value = c.id;
@@ -2836,17 +3158,18 @@ g.addEventListener('mouseleave', () => {
 
         async function salvarVolta(e) {
             e.preventDefault();
+            const id_pista     = document.getElementById('volta-pista').value;
             const id_corredor  = document.getElementById('volta-corredor').value;
             const numero_volta = document.getElementById('volta-numero').value;
             const tempo        = document.getElementById('volta-tempo').value;
-            if (!id_corredor || !numero_volta || !tempo) { showToast('Preencha todos os campos', 'error'); return; }
+            if (!id_pista || !id_corredor || !numero_volta || !tempo) { showToast('Preencha todos os campos', 'error'); return; }
             const btn = document.getElementById('btn-salvar-volta');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Salvando...';
             try {
                 await apiFetch(ROUTES.voltas, {
                     method: 'POST',
-                    body: JSON.stringify({ id_corredor: Number(id_corredor), numero_volta: Number(numero_volta), tempo: parseFloat(tempo) }),
+                    body: JSON.stringify({ id_pista: Number(id_pista), id_corredor: Number(id_corredor), numero_volta: Number(numero_volta), tempo: parseFloat(tempo) }),
                 });
                 showToast('Volta registrada com sucesso!', 'success');
                 document.getElementById('form-volta').reset();
@@ -2870,47 +3193,293 @@ g.addEventListener('mouseleave', () => {
             }
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            RANKING
-        ════════════════════════════════════════ */
-        async function loadRanking() {
-            const tbody = document.getElementById('ranking-table');
-            tbody.innerHTML = `<tr><td colspan="7" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
-            try {
-                const data = await apiFetch(ROUTES.corredores);
-                const ranking = data
-                    .filter(c => c.total_voltas > 0)
-                    .sort((a, b) => {
-                        if (a.total_voltas !== b.total_voltas) return b.total_voltas - a.total_voltas;
-                        return (parseFloat(a.melhor_tempo) || Infinity) - (parseFloat(b.melhor_tempo) || Infinity);
-                    });
-                if (!ranking.length) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="state-empty"><i class="fas fa-trophy"></i>Nenhum corredor classificado ainda</td></tr>`;
-                    return;
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        function montarRankingGeralPorVoltas(voltas) {
+            const pilotosMap = new Map();
+            const equipesMap = new Map();
+
+            voltas.forEach(v => {
+                const tempo = parseFloat(v.tempo);
+                if (!Number.isFinite(tempo) || tempo <= 0) return;
+
+                const pilotoId = Number(v.id_corredor ?? v.corredor_id);
+                const pistaId = Number(v.id_pista ?? v.pista_id);
+                const equipeNome = String(v.equipe || 'Sem equipe');
+
+                if (pilotoId) {
+                    if (!pilotosMap.has(pilotoId)) {
+                        pilotosMap.set(pilotoId, {
+                            id: pilotoId,
+                            nome: v.corredor_nome || v.nome || 'Piloto',
+                            turma: v.turma || '',
+                            equipe: equipeNome,
+                            total_voltas: 0,
+                            total_pistas: new Set(),
+                            melhor_tempo: tempo,
+                            tempo_total: 0,
+                        });
+                    }
+                    const piloto = pilotosMap.get(pilotoId);
+                    piloto.total_voltas += 1;
+                    piloto.tempo_total += tempo;
+                    piloto.melhor_tempo = Math.min(piloto.melhor_tempo, tempo);
+                    if (pistaId) piloto.total_pistas.add(pistaId);
                 }
-                tbody.innerHTML = ranking.map((c, i) => {
+
+                if (!equipesMap.has(equipeNome)) {
+                    equipesMap.set(equipeNome, {
+                        equipe: equipeNome,
+                        total_voltas: 0,
+                        total_pilotos: new Set(),
+                        total_pistas: new Set(),
+                        melhor_tempo: tempo,
+                        tempo_total: 0,
+                    });
+                }
+                const equipe = equipesMap.get(equipeNome);
+                equipe.total_voltas += 1;
+                equipe.tempo_total += tempo;
+                equipe.melhor_tempo = Math.min(equipe.melhor_tempo, tempo);
+                if (pilotoId) equipe.total_pilotos.add(pilotoId);
+                if (pistaId) equipe.total_pistas.add(pistaId);
+            });
+
+            const ordenar = (a, b) =>
+                (a.tempo_total - b.tempo_total) ||
+                (b.total_voltas - a.total_voltas) ||
+                (a.melhor_tempo - b.melhor_tempo) ||
+                String(a.nome || a.equipe).localeCompare(String(b.nome || b.equipe));
+
+            return {
+                pilotos: [...pilotosMap.values()]
+                    .map(p => ({ ...p, total_pistas: p.total_pistas.size || 1 }))
+                    .sort(ordenar),
+                equipes: [...equipesMap.values()]
+                    .map(e => ({ ...e, total_pilotos: e.total_pilotos.size, total_pistas: e.total_pistas.size || 1 }))
+                    .sort(ordenar),
+            };
+        }
+
+        function renderRankingGeral(pilotos, equipes) {
+            const tbodyPilotos = document.getElementById('ranking-geral-pilotos-table');
+            const tbodyEquipes = document.getElementById('ranking-geral-equipes-table');
+
+            if (!pilotos.length) {
+                tbodyPilotos.innerHTML = `<tr><td colspan="9" class="state-empty"><i class="fas fa-trophy"></i>Nenhum piloto no ranking geral</td></tr>`;
+            } else {
+                tbodyPilotos.innerHTML = pilotos.map((c, i) => {
                     const pos = i + 1;
                     const badge = pos === 1 ? 'badge-pos1' : pos === 2 ? 'badge-pos2' : pos === 3 ? 'badge-pos3' : 'badge-gold';
+                    const pdfPayload = encodeURIComponent(JSON.stringify({ tipo: 'Piloto', nome: c.nome, equipe: c.equipe, pista: 'Ranking Geral', geral: true, posicao: pos, voltas: c.total_voltas, pistas: c.total_pistas, tempoTotal: c.tempo_total, melhorTempo: c.melhor_tempo }));
                     return `
                         <tr class="ranking-row">
                             <td><span class="badge ${badge}">#${pos}</span></td>
                             <td><strong>${sanitize(c.nome)}</strong></td>
                             <td><span class="badge badge-green">${sanitize(c.equipe)}</span></td>
                             <td>${sanitize(c.turma)}</td>
+                            <td>${safe(c.total_pistas)}</td>
                             <td>${safe(c.total_voltas)}</td>
-                            <td><strong style="color:var(--gold)">${c.melhor_tempo ? parseFloat(c.melhor_tempo).toFixed(3) + 's' : '—'}</strong></td>
-                            <td>${c.tempo_total ? parseFloat(c.tempo_total).toFixed(3) + 's' : '—'}</td>
+                            <td>${c.tempo_total ? parseFloat(c.tempo_total).toFixed(3) + 's' : '---'}</td>
+                            <td><strong style="color:var(--gold)">${c.melhor_tempo ? parseFloat(c.melhor_tempo).toFixed(3) + 's' : '---'}</strong></td>
+                            <td><button class="btn btn-info" onclick="gerarCertificadoPDF(JSON.parse(decodeURIComponent('${pdfPayload}')))"><i class="fas fa-file-pdf"></i></button></td>
                         </tr>`;
                 }).join('');
+            }
+
+            if (!equipes.length) {
+                tbodyEquipes.innerHTML = `<tr><td colspan="8" class="state-empty"><i class="fas fa-users"></i>Nenhuma equipe no ranking geral</td></tr>`;
+            } else {
+                tbodyEquipes.innerHTML = equipes.map((equipe, i) => {
+                    const pos = i + 1;
+                    const badge = pos === 1 ? 'badge-pos1' : pos === 2 ? 'badge-pos2' : pos === 3 ? 'badge-pos3' : 'badge-gold';
+                    const pdfPayload = encodeURIComponent(JSON.stringify({ tipo: 'Equipe', nome: equipe.equipe, equipe: equipe.equipe, pista: 'Ranking Geral', geral: true, posicao: pos, voltas: equipe.total_voltas, pistas: equipe.total_pistas, tempoTotal: equipe.tempo_total, melhorTempo: equipe.melhor_tempo, pilotos: equipe.total_pilotos }));
+                    return `
+                        <tr class="ranking-row">
+                            <td><span class="badge ${badge}">#${pos}</span></td>
+                            <td><strong>${sanitize(equipe.equipe)}</strong></td>
+                            <td>${safe(equipe.total_pilotos)}</td>
+                            <td>${safe(equipe.total_pistas)}</td>
+                            <td>${safe(equipe.total_voltas)}</td>
+                            <td>${equipe.tempo_total ? parseFloat(equipe.tempo_total).toFixed(3) + 's' : '---'}</td>
+                            <td><strong style="color:var(--gold)">${equipe.melhor_tempo ? parseFloat(equipe.melhor_tempo).toFixed(3) + 's' : '---'}</strong></td>
+                            <td><button class="btn btn-info" onclick="gerarCertificadoPDF(JSON.parse(decodeURIComponent('${pdfPayload}')))"><i class="fas fa-file-pdf"></i></button></td>
+                        </tr>`;
+                }).join('');
+            }
+        }
+
+        async function loadRankingGeral() {
+            const tbodyPilotos = document.getElementById('ranking-geral-pilotos-table');
+            const tbodyEquipes = document.getElementById('ranking-geral-equipes-table');
+            if (!tbodyPilotos || !tbodyEquipes) return;
+
+            tbodyPilotos.innerHTML = `<tr><td colspan="9" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+            tbodyEquipes.innerHTML = `<tr><td colspan="8" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+
+            try {
+                const [pilotos, equipes] = await Promise.all([
+                    apiFetch(`${ROUTES.pistas}/ranking-geral/pilotos`),
+                    apiFetch(`${ROUTES.pistas}/ranking-geral/equipes`),
+                ]);
+
+                renderRankingGeral(pilotos, equipes);
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar ranking</td></tr>`;
+                console.warn('Ranking geral por API indisponivel, calculando pelo historico de voltas:', err);
+                try {
+                    const voltas = await apiFetch(ROUTES.voltas);
+                    const ranking = montarRankingGeralPorVoltas(voltas);
+                    renderRankingGeral(ranking.pilotos, ranking.equipes);
+                } catch (fallbackErr) {
+                    tbodyPilotos.innerHTML = `<tr><td colspan="9" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar ranking geral</td></tr>`;
+                    tbodyEquipes.innerHTML = `<tr><td colspan="8" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar ranking geral</td></tr>`;
+                    console.error(fallbackErr);
+                }
+            }
+        }
+
+        async function loadRanking() {
+            const tbody = document.getElementById('ranking-table');
+            const tbodyEquipes = document.getElementById('ranking-equipes-table');
+            const select = document.getElementById('ranking-pista');
+            try {
+                loadRankingGeral();
+                const pistas = await loadPistasSelect('ranking-pista');
+                const pistaId = select.value || pistas[0]?.id || '';
+                if (pistaId && !select.value) select.value = String(pistaId);
+
+                if (!pistaId) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="state-empty"><i class="fas fa-road"></i>Cadastre uma pista para gerar rankings</td></tr>`;
+                    tbodyEquipes.innerHTML = `<tr><td colspan="7" class="state-empty"><i class="fas fa-road"></i>Cadastre uma pista para gerar rankings</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = `<tr><td colspan="8" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+                tbodyEquipes.innerHTML = `<tr><td colspan="7" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>`;
+
+                const [ranking, equipes] = await Promise.all([
+                    apiFetch(`${ROUTES.pistas}/${pistaId}/ranking`),
+                    apiFetch(`${ROUTES.pistas}/${pistaId}/ranking-equipes`),
+                ]);
+
+                if (!ranking.length) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="state-empty"><i class="fas fa-trophy"></i>Nenhum piloto classificado nesta pista</td></tr>`;
+                } else {
+                    tbody.innerHTML = ranking.map((c, i) => {
+                        const pos = i + 1;
+                        const badge = pos === 1 ? 'badge-pos1' : pos === 2 ? 'badge-pos2' : pos === 3 ? 'badge-pos3' : 'badge-gold';
+                        const pdfPayload = encodeURIComponent(JSON.stringify({ tipo: 'Piloto', nome: c.nome, equipe: c.equipe, pista: c.pista_nome, posicao: pos, voltas: c.total_voltas, tempoTotal: c.tempo_total, melhorTempo: c.melhor_tempo }));
+                        return `
+                            <tr class="ranking-row">
+                                <td><span class="badge ${badge}">#${pos}</span></td>
+                                <td><strong>${sanitize(c.nome)}</strong></td>
+                                <td><span class="badge badge-green">${sanitize(c.equipe)}</span></td>
+                                <td>${sanitize(c.turma)}</td>
+                                <td>${safe(c.total_voltas)}</td>
+                                <td>${c.tempo_total ? parseFloat(c.tempo_total).toFixed(3) + 's' : '---'}</td>
+                                <td><strong style="color:var(--gold)">${c.melhor_tempo ? parseFloat(c.melhor_tempo).toFixed(3) + 's' : '---'}</strong></td>
+                                <td><button class="btn btn-info" onclick="gerarCertificadoPDF(JSON.parse(decodeURIComponent('${pdfPayload}')))"><i class="fas fa-file-pdf"></i></button></td>
+                            </tr>`;
+                    }).join('');
+                }
+
+                if (!equipes.length) {
+                    tbodyEquipes.innerHTML = `<tr><td colspan="7" class="state-empty"><i class="fas fa-users"></i>Nenhuma equipe classificada nesta pista</td></tr>`;
+                } else {
+                    tbodyEquipes.innerHTML = equipes.map((equipe, i) => {
+                        const pos = i + 1;
+                        const badge = pos === 1 ? 'badge-pos1' : pos === 2 ? 'badge-pos2' : pos === 3 ? 'badge-pos3' : 'badge-gold';
+                        const pdfPayload = encodeURIComponent(JSON.stringify({ tipo: 'Equipe', nome: equipe.equipe, equipe: equipe.equipe, pista: equipe.pista_nome, posicao: pos, voltas: equipe.total_voltas, tempoTotal: equipe.tempo_total, melhorTempo: equipe.melhor_tempo, pilotos: equipe.total_pilotos }));
+                        return `
+                            <tr class="ranking-row">
+                                <td><span class="badge ${badge}">#${pos}</span></td>
+                                <td><strong>${sanitize(equipe.equipe)}</strong></td>
+                                <td>${safe(equipe.total_pilotos)}</td>
+                                <td>${safe(equipe.total_voltas)}</td>
+                                <td>${equipe.tempo_total ? parseFloat(equipe.tempo_total).toFixed(3) + 's' : '---'}</td>
+                                <td><strong style="color:var(--gold)">${equipe.melhor_tempo ? parseFloat(equipe.melhor_tempo).toFixed(3) + 's' : '---'}</strong></td>
+                                <td><button class="btn btn-info" onclick="gerarCertificadoPDF(JSON.parse(decodeURIComponent('${pdfPayload}')))"><i class="fas fa-file-pdf"></i></button></td>
+                            </tr>`;
+                    }).join('');
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="8" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar ranking</td></tr>`;
+                tbodyEquipes.innerHTML = `<tr><td colspan="7" class="state-error"><i class="fas fa-exclamation-triangle"></i>Erro ao carregar ranking</td></tr>`;
                 console.error(err);
             }
         }
 
-        /* ════════════════════════════════════════
+        function gerarCertificadoPDF(dados) {
+            const tempoTotal = dados.tempoTotal ? parseFloat(dados.tempoTotal).toFixed(3) + 's' : '---';
+            const melhorTempo = dados.melhorTempo ? parseFloat(dados.melhorTempo).toFixed(3) + 's' : '---';
+            const contextoRanking = dados.geral ? 'no ranking geral' : `no ranking da pista ${sanitize(dados.pista || '---')}`;
+            const pistasMetric = dados.geral
+                ? `<div class="metric">Pistas<strong>${safe(dados.pistas)}</strong></div>`
+                : '';
+            const issuedAt = new Date().toLocaleDateString('pt-BR');
+            const win = window.open('', '_blank', 'width=920,height=720');
+            if (!win) {
+                showToast('Permita pop-ups para gerar o PDF', 'error');
+                return;
+            }
+            win.document.write(`
+                <!doctype html>
+                <html lang="pt-BR">
+                <head>
+                    <meta charset="utf-8">
+                    <title>Certificado Cowabunga F1</title>
+                    <style>
+                        @page { size: A4 landscape; margin: 0; }
+                        * { box-sizing: border-box; }
+                        body { margin: 0; min-height: 100vh; background: #050505; color: #f8f2d8; font-family: Arial, sans-serif; display: grid; place-items: center; }
+                        .cert { width: 100vw; height: 100vh; padding: 42px; border: 18px solid #d4af37; background: radial-gradient(circle at top left, rgba(42,75,60,.85), transparent 34%), linear-gradient(135deg, #050505 0%, #101510 60%, #050505 100%); position: relative; overflow: hidden; }
+                        .cert:before { content: "COWABUNGA F1"; position: absolute; inset: auto -40px 24px auto; color: rgba(212,175,55,.08); font-size: 76px; font-weight: 900; letter-spacing: 10px; }
+                        .top { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(212,175,55,.45); padding-bottom: 22px; }
+                        .brand { color: #d4af37; font-size: 32px; font-weight: 900; letter-spacing: 5px; }
+                        .seal { width: 118px; height: 118px; border: 3px solid #d4af37; border-radius: 50%; display: grid; place-items: center; color: #d4af37; font-size: 42px; font-weight: 900; }
+                        .label { color: rgba(248,242,216,.62); text-transform: uppercase; letter-spacing: 3px; font-size: 12px; margin-top: 8px; }
+                        h1 { color: #f3e5ab; font-size: 58px; margin: 46px 0 10px; letter-spacing: 2px; }
+                        .position { color: #d4af37; font-size: 96px; font-weight: 900; line-height: 1; }
+                        .grid { display: grid; grid-template-columns: repeat(${dados.geral ? 5 : 4}, 1fr); gap: 14px; margin-top: 44px; }
+                        .metric { border: 1px solid rgba(212,175,55,.35); padding: 18px; background: rgba(0,0,0,.28); }
+                        .metric strong { display: block; color: #d4af37; font-size: 24px; margin-top: 8px; }
+                        .footer { position: absolute; left: 42px; right: 42px; bottom: 32px; display: flex; justify-content: space-between; color: rgba(248,242,216,.72); font-size: 13px; }
+                    </style>
+                </head>
+                <body>
+                    <section class="cert">
+                        <div class="top">
+                            <div>
+                                <div class="brand">COWABUNGA F1 TEAM</div>
+                                <div class="label">Certificado oficial de ranking</div>
+                            </div>
+                            <div class="seal">#${dados.posicao}</div>
+                        </div>
+                        <div class="position">${dados.posicao}º Lugar</div>
+                        <h1>${sanitize(dados.nome)}</h1>
+                        <div class="label">${sanitize(dados.tipo)} ${contextoRanking}</div>
+                        <div class="grid">
+                            <div class="metric">Equipe<strong>${sanitize(dados.equipe || dados.nome)}</strong></div>
+                            ${pistasMetric}
+                            <div class="metric">Voltas<strong>${safe(dados.voltas)}</strong></div>
+                            <div class="metric">Tempo total<strong>${tempoTotal}</strong></div>
+                            <div class="metric">Melhor volta<strong>${melhorTempo}</strong></div>
+                        </div>
+                        <div class="footer">
+                            <span>Emitido em ${issuedAt}</span>
+                            <span>Race With The Shield</span>
+                        </div>
+                    </section>
+                    <script>window.onload = () => { window.print(); };<\/script>
+                </body>
+                </html>
+            `);
+            win.document.close();
+        }
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            USER DISPLAY
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         function loadUserInfo() {
             try {
                 const raw = sessionStorage.getItem('cowa_user');
@@ -2923,9 +3492,9 @@ g.addEventListener('mouseleave', () => {
             } catch { /* noop */ }
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            NAVIGATION
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
                 sessionStorage.removeItem('cowa_user');
@@ -2937,9 +3506,9 @@ g.addEventListener('mouseleave', () => {
             window.location.href = '../index.html';
         }
 
-        /* ════════════════════════════════════════
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
            INIT
-        ════════════════════════════════════════ */
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
         window.addEventListener('load', () => {
             loadUserInfo();
             loadDashboard();

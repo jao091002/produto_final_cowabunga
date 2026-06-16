@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
                    SUM(v.tempo) AS tempo_total
             FROM corredores c
             LEFT JOIN voltas v ON c.id = v.corredor_id
-            GROUP BY c.id
+            GROUP BY c.id, c.nome, c.turma, c.equipe
             ORDER BY c.nome ASC
         `);
         res.json(corredores);
@@ -66,11 +66,14 @@ router.post('/', async (req, res) => {
 router.get('/ranking', async (req, res) => {
     try {
         const [ranking] = await db.query(`
-            SELECT c.id, c.nome, c.equipe, MIN(v.tempo) AS melhor_volta
+            SELECT c.id, c.nome, c.turma, c.equipe,
+                   COUNT(v.id) AS total_voltas,
+                   MIN(v.tempo) AS melhor_volta,
+                   SUM(v.tempo) AS tempo_total
             FROM corredores c
             INNER JOIN voltas v ON c.id = v.corredor_id
-            GROUP BY c.id
-            ORDER BY melhor_volta ASC
+            GROUP BY c.id, c.nome, c.turma, c.equipe
+            ORDER BY tempo_total ASC, total_voltas DESC, melhor_volta ASC, c.nome ASC
         `);
         res.json(ranking);
     } catch (error) {
@@ -91,17 +94,21 @@ router.get('/:id', async (req, res) => {
             FROM corredores c
             LEFT JOIN voltas v ON c.id = v.corredor_id
             WHERE c.id = ?
-            GROUP BY c.id
+            GROUP BY c.id, c.nome, c.turma, c.equipe
         `, [id]);
 
         if (corredor.length === 0) {
             return res.status(404).json({ erro: 'Corredor nao encontrado.' });
         }
 
-        const [voltas] = await db.query(
-            'SELECT id, corredor_id AS id_corredor, numero_volta, tempo, created_at AS data FROM voltas WHERE corredor_id = ? ORDER BY numero_volta',
-            [id]
-        );
+        const [voltas] = await db.query(`
+            SELECT v.id, v.corredor_id AS id_corredor, v.pista_id AS id_pista, v.numero_volta, v.tempo, v.created_at AS data,
+                   p.nome AS pista_nome
+            FROM voltas v
+            LEFT JOIN pistas p ON v.pista_id = p.id
+            WHERE v.corredor_id = ?
+            ORDER BY p.nome ASC, v.numero_volta ASC
+        `, [id]);
 
         res.json({ ...corredor[0], voltas });
     } catch (error) {

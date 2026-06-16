@@ -1,15 +1,24 @@
-GET /users               – list users
-POST /users              – create user
-POST /users/login        – login
-PUT /users/:id           – update user
-DELETE /users/:id        – delete user
-GET /corredores          – list competitors with stats
-POST /corredores         – create competitor
-GET /corredores/ranking  – ranking of competitors
-GET /corredores/:id      – competitor details + laps
-PUT /corredores/:id      – update competitor
-DELETE /corredores/:id   – delete competitor
-GET /voltas              – list all laps
-POST /voltas             – create lap
-GET /voltas/:id          – get lap by id
-DELETE /voltas/:id       – delete lap
+GET /users                         - list users
+POST /users                        - create user
+POST /users/login                  - login
+PUT /users/:id                     - update user
+DELETE /users/:id                  - delete user
+GET /corredores                    - list competitors with stats
+POST /corredores                   - create competitor
+GET /corredores/ranking            - ranking of competitors
+GET /corredores/:id                - competitor details + laps
+PUT /corredores/:id                - update competitor
+DELETE /corredores/:id             - delete competitor
+GET /pistas                        - list tracks with stats
+POST /pistas                       - create track
+GET /pistas/ranking-geral/pilotos  - overall driver ranking across all tracks
+GET /pistas/ranking-geral/equipes  - overall team ranking across all tracks
+GET /pistas/:id                    - track details
+PUT /pistas/:id                    - update track
+DELETE /pistas/:id                 - delete track
+GET /pistas/:id/ranking            - driver ranking by track
+GET /pistas/:id/ranking-equipes    - team ranking by track
+GET /voltas                        - list all laps
+POST /voltas                       - create lap
+GET /voltas/:id                    - get lap by id
+DELETE /voltas/:id                 - delete lap

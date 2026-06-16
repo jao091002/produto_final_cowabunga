@@ -5,6 +5,7 @@ const AUTH_USER_KEY = 'cowa_user';
 const API_ROUTES = {
   users: '/users',
   corredores: '/corredores',
+  pistas: '/pistas',
   voltas: '/voltas',
   ranking: '/corredores/ranking',
 };

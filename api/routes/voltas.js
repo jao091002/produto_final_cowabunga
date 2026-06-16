@@ -8,14 +8,18 @@ router.get('/', async (req, res) => {
         const [voltas] = await db.query(`
             SELECT v.id,
                    v.corredor_id AS id_corredor,
+                   v.pista_id AS id_pista,
                    v.numero_volta,
                    v.tempo,
                    v.created_at AS data,
                    c.nome AS corredor_nome,
                    c.turma,
-                   c.equipe
+                   c.equipe,
+                   p.nome AS pista_nome,
+                   p.localizacao AS pista_localizacao
             FROM voltas v
             LEFT JOIN corredores c ON v.corredor_id = c.id
+            LEFT JOIN pistas p ON v.pista_id = p.id
             ORDER BY v.created_at DESC
         `);
         res.json(voltas);
@@ -27,35 +31,44 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const id_corredor = Number(req.body.id_corredor);
+    const id_pista = Number(req.body.id_pista);
     const numero_volta = Number(req.body.numero_volta);
     const tempo = Number(req.body.tempo);
 
-    if (!id_corredor || !Number.isInteger(numero_volta) || numero_volta <= 0 || !Number.isFinite(tempo) || tempo <= 0) {
-        return res.status(400).json({ erro: 'id_corredor, numero_volta e tempo sao obrigatorios e devem ser validos.' });
+    if (!id_corredor || !id_pista || !Number.isInteger(numero_volta) || numero_volta <= 0 || !Number.isFinite(tempo) || tempo <= 0) {
+        return res.status(400).json({ erro: 'id_corredor, id_pista, numero_volta e tempo sao obrigatorios e devem ser validos.' });
     }
 
     try {
-        const [exists] = await db.query('SELECT id FROM corredores WHERE id = ?', [id_corredor]);
-        if (exists.length === 0) {
+        const [corredorExists] = await db.query('SELECT id FROM corredores WHERE id = ?', [id_corredor]);
+        if (corredorExists.length === 0) {
             return res.status(404).json({ erro: 'Corredor nao encontrado.' });
         }
 
+        const [pistaExists] = await db.query('SELECT id FROM pistas WHERE id = ?', [id_pista]);
+        if (pistaExists.length === 0) {
+            return res.status(404).json({ erro: 'Pista nao encontrada.' });
+        }
+
         const [result] = await db.query(
-            'INSERT INTO voltas (corredor_id, numero_volta, tempo) VALUES (?, ?, ?)',
-            [id_corredor, numero_volta, tempo]
+            'INSERT INTO voltas (corredor_id, pista_id, numero_volta, tempo) VALUES (?, ?, ?, ?)',
+            [id_corredor, id_pista, numero_volta, tempo]
         );
 
         const [created] = await db.query(`
-            SELECT v.id, v.corredor_id AS id_corredor, v.numero_volta, v.tempo, v.created_at AS data,
-                   c.nome AS corredor_nome, c.turma, c.equipe
+            SELECT v.id, v.corredor_id AS id_corredor, v.pista_id AS id_pista, v.numero_volta, v.tempo, v.created_at AS data,
+                   c.nome AS corredor_nome, c.turma, c.equipe,
+                   p.nome AS pista_nome, p.localizacao AS pista_localizacao
             FROM voltas v
             LEFT JOIN corredores c ON v.corredor_id = c.id
+            LEFT JOIN pistas p ON v.pista_id = p.id
             WHERE v.id = ?
         `, [result.insertId]);
 
         res.status(201).json(created[0] || {
             id: result.insertId,
             id_corredor,
+            id_pista,
             numero_volta,
             tempo,
             data: new Date().toISOString(),
@@ -70,7 +83,7 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const [volta] = await db.query(
-            'SELECT id, corredor_id AS id_corredor, numero_volta, tempo, created_at AS data FROM voltas WHERE id = ?',
+            'SELECT id, corredor_id AS id_corredor, pista_id AS id_pista, numero_volta, tempo, created_at AS data FROM voltas WHERE id = ?',
             [id]
         );
         if (volta.length === 0) {
