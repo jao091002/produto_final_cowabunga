@@ -110,4 +110,65 @@ router.delete('/:id', requireAuth, async (req, res) => {
     }
 });
 
+// Média por piloto (corredor)
+router.get('/media/pilotos', async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT
+                c.id AS id_corredor,
+                c.nome AS corredor_nome,
+                c.equipe,
+                SUM(v.tempo) AS tempo_total,
+                COUNT(*) AS voltas
+            FROM voltas v
+            JOIN corredores c ON v.corredor_id = c.id
+            GROUP BY c.id, c.nome, c.equipe
+            ORDER BY (SUM(v.tempo) / COUNT(*)) ASC
+        `);
+
+        // Normaliza tipos numéricos e calcula média explicitamente como soma/contagem
+        const result = rows.map(r => ({
+            id_corredor: r.id_corredor,
+            corredor_nome: r.corredor_nome,
+            equipe: r.equipe,
+            tempo_total: r.tempo_total !== null ? Number(r.tempo_total) : null,
+            voltas: Number(r.voltas || 0),
+            tempo_medio: r.tempo_total !== null && r.voltas ? Number(r.tempo_total) / Number(r.voltas) : null,
+        }));
+
+        res.json(result);
+    } catch (error) {
+        console.error('Erro ao calcular media por piloto:', error.message);
+        res.status(500).json({ erro: 'Erro ao calcular media por piloto.' });
+    }
+});
+
+// Média por equipe
+router.get('/media/equipes', async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT
+                COALESCE(c.equipe, '') AS equipe,
+                SUM(v.tempo) AS tempo_total,
+                COUNT(*) AS voltas
+            FROM voltas v
+            JOIN corredores c ON v.corredor_id = c.id
+            GROUP BY c.equipe
+            ORDER BY (SUM(v.tempo) / COUNT(*)) ASC
+        `);
+
+        const result = rows.map(r => ({
+            equipe: r.equipe,
+            tempo_total: r.tempo_total !== null ? Number(r.tempo_total) : null,
+            voltas: Number(r.voltas || 0),
+            tempo_medio: r.tempo_total !== null && r.voltas ? Number(r.tempo_total) / Number(r.voltas) : null,
+        }));
+
+        res.json(result);
+    } catch (error) {
+        console.error('Erro ao calcular media por equipe:', error.message);
+        res.status(500).json({ erro: 'Erro ao calcular media por equipe.' });
+    }
+});
+
 module.exports = router;

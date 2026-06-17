@@ -1,4 +1,4 @@
-const API_BASE = '';
+const API_BASE = (typeof location !== 'undefined' && location.protocol === 'file:') ? 'http://localhost:3000' : '';
 const AUTH_TOKEN_KEY = 'cowa_token';
 const AUTH_USER_KEY = 'cowa_user';
 
@@ -56,7 +56,8 @@ async function apiFetch(url, options = {}) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(url.startsWith('/') ? url : API_BASE + url, {
+  const requestUrl = url.startsWith('http') ? url : (API_BASE ? (API_BASE.replace(/\/$/, '') + url) : url);
+  const response = await fetch(requestUrl, {
     ...options,
     headers,
   });

@@ -123,11 +123,12 @@
         .nav-link-back {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.62rem; letter-spacing: 0.12em;
-            color: var(--muted);
-            border: 1px solid rgba(212,175,55,0.2);
+            color: var(--gold);
+            border: 1px solid rgba(212,175,55,0.35);
             padding: 7px 16px; border-radius: 6px;
             transition: all 0.25s;
             text-transform: uppercase;
+            background: var(--gold-dim);
         }
         .nav-link-back:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-dim); }
 
@@ -1012,6 +1013,7 @@
             </div>
             <div class="nav-right">
                 <button class="nav-link-back" type="button" onclick="window.location.href='../index.html'">Voltar</button>
+                <button class="nav-link-back" type="button" style="margin-left:8px;" onclick="window.location.href='/Front/dashboard.html'">Dashboard</button>
             </div>
         </div>
     </header>
@@ -1086,14 +1088,24 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 14px 35px rgba(212,175,55,0.32);
-        }
+        }   
         .btn-secondary {
+            position: relative; overflow: hidden;
             display: inline-flex; align-items: center; justify-content: center;
-            padding: 14px 24px; border-radius: 999px; border: 1px solid rgba(212,175,55,0.2);
-            color: var(--muted); background: rgba(255,255,255,0.04); font-family: 'Orbitron',sans-serif;
+            padding: 14px 24px; border-radius: 999px; border: 1px solid rgba(212,175,55,0.18);
+            color: var(--muted); background: transparent; font-family: 'Orbitron',sans-serif;
             font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
+            transition: all 0.28s var(--ease-out);
         }
-        .btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+        .btn-secondary::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(212,175,55,0.16), transparent);
+            transform: translateX(-100%);
+            transition: transform .45s var(--ease-out), opacity .35s var(--ease-out);
+            z-index: -1; opacity: 0;
+        }
+        .btn-secondary:hover { color: var(--gold); border-color: var(--gold); box-shadow: 0 10px 30px rgba(212,175,55,0.12); transform: translateY(-2px); }
+        .btn-secondary:hover::after { transform: translateX(0); opacity: 1; }
         .hidden { display: none !important; }
         @media(max-width: 640px) {
             .auth-header-bar { flex-direction: column; align-items: stretch; }
@@ -2107,7 +2119,9 @@
     }
 
     function toggleCart() {
-        document.getElementById('cart-sidebar').classList.toggle('active');
+        const sidebar = document.getElementById('cart-sidebar');
+        const becameActive = sidebar.classList.toggle('active');
+        if (becameActive) updateCartUI();
     }
 
     function updateCartQty(i, delta) {
@@ -2153,9 +2167,11 @@
             });
         }
 
-        badge.textContent = qty;
-        document.getElementById('cart-subtotal').textContent = fmt(total);
-        document.getElementById('cart-total-price').textContent = fmt(total);
+        if (badge) badge.textContent = qty;
+        const subEl = document.getElementById('cart-subtotal');
+        const totEl = document.getElementById('cart-total-price');
+        if (subEl) subEl.textContent = fmt(total);
+        if (totEl) totEl.textContent = fmt(total);
     }
 
     /* ════════════════════════════════════════════

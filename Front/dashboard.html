@@ -1070,6 +1070,10 @@
                     <div class="stat-box">
                         <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
                         <div class="stat-value" id="stat-melhor">—</div>
+                        <div style="margin-top:6px;font-size:0.78rem;color:var(--text-sub);" id="stat-melhor-meta">
+                            <div id="stat-melhor-nome">—</div>
+                            <div id="stat-melhor-equipe" style="color:var(--text-muted);font-size:0.72rem">—</div>
+                        </div>
                         <div class="stat-label">Melhor Volta (s)</div>
                     </div>
                 </div>
@@ -1091,6 +1095,37 @@
                                 <tr><td colspan="5" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Média por Piloto / Equipe -->
+                <div style="display:flex;gap:1.25rem;margin-top:1.5rem;flex-wrap:wrap;">
+                    <div class="card" style="flex:1;min-width:320px;">
+                        <div class="card-title"><i class="fas fa-stopwatch"></i> Tempo Médio por Piloto</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Nome</th><th>Equipe</th><th>Tempo Total (s)</th><th>Tempo Médio (s)</th><th>Voltas</th></tr>
+                                </thead>
+                                <tbody id="media-pilotos">
+                                    <tr><td colspan="5" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card" style="flex:0.6;min-width:260px;">
+                        <div class="card-title"><i class="fas fa-users"></i> Tempo Médio por Equipe</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th>Equipe</th><th>Tempo Total (s)</th><th>Tempo Médio (s)</th><th>Voltas</th></tr>
+                                </thead>
+                                <tbody id="media-equipes">
+                                    <tr><td colspan="4" class="state-loading"><i class="fas fa-spinner spinner"></i>Carregando...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1638,9 +1673,21 @@
                 const equipes = new Set(corredores.map(c => c.equipe));
                 document.getElementById('stat-equipes').textContent = equipes.size;
 
-                const tempos = voltas.map(v => parseFloat(v.tempo)).filter(t => !isNaN(t));
-                document.getElementById('stat-melhor').textContent = tempos.length
-                    ? Math.min(...tempos).toFixed(2) : '—';
+                const tempos = voltas.map(v => ({ tempo: parseFloat(v.tempo), volta: v })).filter(t => !isNaN(t.tempo));
+                if (tempos.length) {
+                    tempos.sort((a, b) => a.tempo - b.tempo);
+                    const best = tempos[0];
+                    document.getElementById('stat-melhor').textContent = best.tempo.toFixed(3);
+                    // show piloto and equipe from the volta record (volta may include corredor_nome and equipe)
+                    const nomeEl = document.getElementById('stat-melhor-nome');
+                    const equipeEl = document.getElementById('stat-melhor-equipe');
+                    if (nomeEl) nomeEl.textContent = best.volta.corredor_nome || best.volta.nome || '—';
+                    if (equipeEl) equipeEl.textContent = best.volta.equipe || '—';
+                } else {
+                    document.getElementById('stat-melhor').textContent = '—';
+                    if (document.getElementById('stat-melhor-nome')) document.getElementById('stat-melhor-nome').textContent = '—';
+                    if (document.getElementById('stat-melhor-equipe')) document.getElementById('stat-melhor-equipe').textContent = '—';
+                }
 
                 const top5 = corredores
                     .map(c => {
@@ -1664,6 +1711,67 @@
                         <td>${c.voltasCount ? c.tempoTotal.toFixed(2) + 's' : '—'}</td>
                     </tr>
                 `).join('');
+
+                // Carrega médias por piloto e por equipe
+                try {
+                    let pilotos = [];
+                    let equipesAvg = [];
+                    try {
+                        pilotos = await apiFetch(API_ROUTES.voltas + '/media/pilotos');
+                    } catch (err) {
+                        console.error('Erro ao carregar /voltas/media/pilotos', err);
+                        pilotos = [];
+                    }
+                    try {
+                        equipesAvg = await apiFetch(API_ROUTES.voltas + '/media/equipes');
+                    } catch (err) {
+                        console.error('Erro ao carregar /voltas/media/equipes', err);
+                        equipesAvg = [];
+                    }
+
+                    const tbPilotos = document.getElementById('media-pilotos');
+                    if (!pilotos.length) {
+                        tbPilotos.innerHTML = `<tr><td colspan="5" class="state-empty"><i class="fas fa-user"></i>Nenhum dado</td></tr>`;
+                    } else {
+                        tbPilotos.innerHTML = pilotos.map(p => {
+                            const total = p.tempo_total !== null && p.tempo_total !== undefined ? Number(p.tempo_total) : null;
+                            const voltas = p.voltas !== null && p.voltas !== undefined ? Number(p.voltas) : 0;
+                            let avg = null;
+                            if (p.tempo_medio !== null && p.tempo_medio !== undefined) {
+                                avg = Number(p.tempo_medio);
+                            } else if (total !== null && voltas > 0) {
+                                avg = total / voltas;
+                            }
+                            return `
+                            <tr>
+                                <td><strong>${sanitize(p.corredor_nome)}</strong></td>
+                                <td>${sanitize(p.equipe || '—')}</td>
+                                <td>${total !== null ? total.toFixed(3) : '—'}</td>
+                                <td>${avg !== null ? avg.toFixed(3) : '—'}</td>
+                                <td>${voltas}</td>
+                            </tr>
+                        `}).join('');
+                    }
+
+                    const tbEquipes = document.getElementById('media-equipes');
+                    if (!equipesAvg.length) {
+                        tbEquipes.innerHTML = `<tr><td colspan="4" class="state-empty"><i class="fas fa-users"></i>Nenhum dado</td></tr>`;
+                    } else {
+                        tbEquipes.innerHTML = equipesAvg.map(e => {
+                            const total = e.tempo_total !== null ? Number(e.tempo_total) : null;
+                            const avg = (total !== null && e.voltas) ? (total / Number(e.voltas)) : null;
+                            return `
+                            <tr>
+                                <td><strong>${sanitize(e.equipe || '—')}</strong></td>
+                                <td>${total !== null ? total.toFixed(3) : '—'}</td>
+                                <td>${avg !== null ? avg.toFixed(3) : '—'}</td>
+                                <td>${e.voltas}</td>
+                            </tr>
+                        `}).join('');
+                    }
+                } catch (errMedia) {
+                    console.error('Erro ao carregar medias:', errMedia);
+                }
             } catch (err) {
                 console.error('Dashboard error:', err);
                 showToast('Erro ao carregar dashboard', 'error');
